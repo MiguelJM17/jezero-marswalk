@@ -2,7 +2,8 @@
 
 Graph
 -----
-Each walkable cell is a vertex joined to its 8 neighbours. The graph is directed
+Each walkable cell is a vertex joined to its 8 neighbours and, where the ground between
+them allows it, the 8 knight moves as well: 16 headings rather than 8. The graph is directed
 because going up costs more than going down. Every edge carries:
   time_s     walking time (Tobler speed model, rescaled to the Apollo flat speed)
   effort     metabolic energy in "oxygen-hours": hours of suit supply at the

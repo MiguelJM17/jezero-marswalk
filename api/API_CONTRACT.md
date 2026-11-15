@@ -32,7 +32,7 @@ The **endpoint names are the ones the Base44 app already uses** (app page `/data
   "round_trip": true,
   "geometry": {"type": "LineString", "frame": "local ENU from habitat", "coordinates": [[east_m, north_m], ...]},
   "lonlat": [[lon, lat], ...],
-  "distance_m": 1162.7, "time_min": 29.3, "relative_effort": 0.77,
+  "distance_m": 1091.5, "time_min": 29.7, "relative_effort": 0.811,
   "max_slope_deg": 27.1, "max_terrain_slope_deg": 33.9,
   "m_walking_grade_steeper_than_20deg": 88.7, "m_terrain_steeper_than_20deg": 115.3, "m_steeper_than_20deg": 122.2,
   "climb_m": 0, "descent_m": 0,
@@ -106,7 +106,7 @@ Response:
 `{"ok": true, "grid": "grid5m_jezero_crop", "habitat": {"lat": 18.452739, "lon": 77.405768}}`
 
 ## Mandatory checks before saying it's ready
-1. `POST /api/routes/easiest` with `{"to": {"waypoint_id": "carbonate_01"}}` must give the same numbers as `route_carbonate_01_easiest` in `routes.json`: 1162.7 m, 29.3 min, effort 0.77, max_slope_deg 27.1, max_terrain_slope_deg 33.9.
+1. `POST /api/routes/easiest` with `{"to": {"waypoint_id": "carbonate_01"}}` must give the same numbers as `route_carbonate_01_easiest` in `routes.json`, field for field. The checks read that file rather than repeating its values here, so a deliberate change to the cost model does not make them fail against their own engine.
 2. `POST /api/emergency/reachable` with `{"position": {"waypoint_id": "olivine_02"}, "suit_supply_left_h": 1}` must give the same as `emergency_olivine_02_1h`.
 3. A point outside the grid returns a 422, not a route.
 

@@ -19,4 +19,4 @@ Rules that must not change:
 5. Minerals are always "probable" detections.
 6. The app has English and Spanish (EN | ES selector). Every new text you add must exist in both languages.
 
-Then test Find a Mineral, Plan a Trip and Emergency against the API, and compare with the precomputed values. For carbonate_01 easiest, the values must be 1162.7 m, 29.3 min and 0.77 h. Tell me which screens now call the API and which still use the precomputed files.
+Then test Find a Mineral, Plan a Trip and Emergency against the API, and compare with the precomputed values. For carbonate_01 easiest, the values must match routes.json: 1091.5 m, 29.7 min and 0.811 h of walking supply. Tell me which screens now call the API and which still use the precomputed files.

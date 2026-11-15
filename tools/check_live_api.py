@@ -75,9 +75,13 @@ def main():
 
     st, j, _ = call("POST", "/api/routes/easiest", {"to": {"waypoint_id": "carbonate_01"}})
     x = (j or {}).get("routes", [{}])[0] if st == 200 else {}
-    got = tuple(x.get(k) for k in ("distance_m", "time_min", "relative_effort", "max_slope_deg", "max_terrain_slope_deg"))
-    check("mandatory 1: carbonate_01 easiest = 1162.7 m, 29.3 min, 0.77, 27.1, 33.9",
-          got == (1162.7, 29.3, 0.77, 27.1, 33.9) and j.get("oxygen_verified") is False, got)
+    KEYS = ("distance_m", "time_min", "relative_effort", "max_slope_deg", "max_terrain_slope_deg")
+    want = tuple(routes["route_carbonate_01_easiest"].get(k) for k in KEYS)
+    got = tuple(x.get(k) for k in KEYS)
+    # Read from the saved route rather than pinned here, so a deliberate change to the
+    # cost model does not make the deploy check fail against its own engine.
+    check(f"mandatory 1: carbonate_01 easiest matches the saved route {want}",
+          got == want and j.get("oxygen_verified") is False, got)
 
     st, j, _ = call("POST", "/api/emergency/reachable", {"position": {"waypoint_id": "olivine_02"}, "suit_supply_left_h": 1})
     s = emerg["emergency_olivine_02_1h"]
