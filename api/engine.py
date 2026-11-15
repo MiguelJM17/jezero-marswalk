@@ -18,7 +18,7 @@ import threading
 import numpy as np
 
 from routing import config as C
-from routing.export_handoff import GROUPS, Exporter, r1
+from routing.export_handoff import GROUPS, Exporter, r1, supply
 from routing.planner import Planner
 from routing.terrain import line_of_sight, load_area, sky_blocked_fraction
 
@@ -159,6 +159,7 @@ class Engine:
         d.update(extra)
         d.update({"geometry": self.geometry(nodes), "lonlat": self.lonlat(nodes), **mt,
                   "science_time_min": float(sci), "total_time_min": r1(total),
+                  **supply(mt["relative_effort"], sci),
                   "feasible_recommended_6h": total <= C.EVA_NOMINAL_H * 60,
                   "feasible_max_8h": total <= C.EVA_MAX_H * 60,
                   "warnings": self.warnings(mt),
