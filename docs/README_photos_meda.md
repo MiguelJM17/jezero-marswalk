@@ -65,9 +65,9 @@ These values were computed by the team pipeline from the files above and are sto
 1. Download the waypoints file and keep end-of-drive points inside the study box.
 2. Sample the team layers at each point with `sample_layers.py` (it refuses multi-band rasters such as the RGB CRISM image).
 3. Query the raw-image gallery by sol range and camera, and keep frames whose `site`/`drive` match the stop's rover position.
-4. Download the MEDA derived PS files and labels listed in `tabla_meda.csv`.
+4. Download the MEDA derived PS files and labels listed in `meda_files.csv`.
 
-The data files themselves (`data/photos/`, `data/meda/`) are not committed to the repository; their source links are listed in `tabla_fotos.csv` and `tabla_meda.csv`.
+The data files themselves (`data/photos/`, `data/meda/`) are not committed to the repository; their source links are listed in `photo_table.csv` and `meda_files.csv`.
 
 ## Sources
 - NASA Mars 2020 waypoints: <https://mars.nasa.gov/mmgis-maps/M20/Layers/json/M20_waypoints.json>

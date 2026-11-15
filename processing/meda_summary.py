@@ -10,7 +10,7 @@ import sys
 
 import numpy as np
 
-# sol of each stop photo -> stops (see ronald/tabla_fotos.csv)
+# sol of each stop photo -> stops (see ronald/photo_table.csv)
 STOPS = {417: ["olivine_01"], 420: ["olivine_02"], 435: ["clay_01"], 674: ["clay_02"], 708: ["carbonate_01", "carbonate_02"]}
 
 out = []

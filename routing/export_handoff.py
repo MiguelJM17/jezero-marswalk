@@ -1,7 +1,7 @@
 """Export everything the Base44 app needs (Mary's handoff README) into one folder.
 
 Usage (from the project root):
-  python -m routing.export_handoff --stops ronald/paradas_propuestas.csv --option A \
+  python -m routing.export_handoff --stops ronald/proposed_stops.csv --option A \
       --base-lat 18.452739 --base-lon 77.405768 --out base44_handoff
 
 All values are computed from the processed NASA layers and the routing model in
@@ -172,9 +172,9 @@ def main():
     ap.add_argument("--base-lon", type=float, required=True)
     ap.add_argument("--rad", default="data/rad")
     ap.add_argument("--dwell-min", type=float, default=C.DEFAULT_DWELL_MIN)
-    ap.add_argument("--photos", default=None, help="Ronald's tabla_fotos.csv")
+    ap.add_argument("--photos", default=None, help="Ronald's photo_table.csv")
     ap.add_argument("--meda", default="data/meda_pressure_summary.json", help="pressure summary from MEDA PS files")
-    ap.add_argument("--rover", default="ronald/waypoints_con_minerales.csv", help="Perseverance end-of-drive positions (Ronald)")
+    ap.add_argument("--rover", default="ronald/rover_waypoints_minerals.csv", help="Perseverance end-of-drive positions (Ronald)")
     ap.add_argument("--out", default="base44_handoff")
     A = ap.parse_args()
     t0 = time.time()

@@ -9,13 +9,13 @@ The goal is an HTTP API that Mary's Base44 app can call to get routes **live** f
 | `tests/` | 11 tests on synthetic terrain (`python3 -m pytest -q tests`) |
 | `data/grid5m_jezero_crop/` | NASA layers on a 5 m grid, ±3 km around the habitat (elevation, slope, roughness, thermal inertia, CRISM minerals) plus `grid.json`. 14 MB. With this crop the routes come out **identical** to the full grid (verified). |
 | `base44_handoff/` | The format contract: what Mary already has. The API must answer with these same objects and fields. Start with `README_sources.md`. |
-| `ronald/paradas_propuestas.csv` | The 6 stops and the habitat (option A) |
+| `ronald/proposed_stops.csv` | The 6 stops and the habitat (option A) |
 | `processing/build_grid.py`, `scripts/download_rad.sh` | How the grid and radiation data were built (reference only; the API doesn't need them) |
 
 ## Test that it works (5 minutes)
 ```bash
 pip install -r requirements.txt
-python3 -m routing.export_handoff --grid data/grid5m_jezero_crop --stops ronald/paradas_propuestas.csv \
+python3 -m routing.export_handoff --grid data/grid5m_jezero_crop --stops ronald/proposed_stops.csv \
   --option A --base-lat 18.452739 --base-lon 77.405768 --out /tmp/test_handoff
 ```
 It should print `17 routes, 4 emergency scenarios` in about 9 s and use about 300 MB of RAM.
@@ -42,7 +42,7 @@ Positions can be sent as `{"waypoint_id": "carbonate_01"}`, `{"lat":..,"lon":..}
 - Slope: there is no 20° mask. It is only a warning (team decision).
 - Answer 422 when a point is outside the grid, and 404 for an unknown `waypoint_id`.
 - CORS: allow the Base44 app's domain.
-- The base and stops are already in `ronald/paradas_propuestas.csv`. The corrected habitat is 18.452739, 77.405768.
+- The base and stops are already in `ronald/proposed_stops.csv`. The corrected habitat is 18.452739, 77.405768.
 
 ## Deployment (Google Cloud Run)
 Miguel creates the Google Cloud project and enables Cloud Run and Cloud Build. You write the code and a `Dockerfile`:

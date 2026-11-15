@@ -49,7 +49,7 @@ All constants live in [`routing/config.py`](routing/config.py), each labelled **
 
 We compared our routes with NASA's `M20_traverse.json` (Perseverance's actual drives, sols 401–762 in this area).
 
-![Our routes vs Perseverance's path](docs/validation/validacion_rutas_vs_rover.png)
+![Our routes vs Perseverance's path](docs/validation/routes_vs_rover.png)
 
 - Between 77% and 100% of each route to the clay and carbonate stops stays within 100 m of the rover's path. The route to clay 1 runs on top of it (16 m on average).
 - In 5 of the 6 stops, the largest separation is at the stop itself, which the rover never drove to.
@@ -114,11 +114,11 @@ pip install -r requirements.txt
    - THEMIS thermal inertia: https://zenodo.org/record/4931348 (`Jezero_Thermal_Inertia_v1.tiff`)
    - CRISM mineral map: https://zenodo.org/record/5575824 (`jezeroFinal.tif` and its legend)
    - Curiosity RAD: `bash scripts/download_rad.sh`
-   - MEDA PS files: see `ronald/tabla_meda.csv`, then `python3 processing/meda_summary.py meda/*.CSV > data/meda_pressure_summary.json`
+   - MEDA PS files: see `ronald/meda_files.csv`, then `python3 processing/meda_summary.py meda/*.CSV > data/meda_pressure_summary.json`
 2. **Build the grid:** `python3 processing/build_grid.py --res 5 --strip 100`
-3. **Export everything the app needs (about 10–20 s, about 360 MB RAM).** If you built the grid somewhere other than `data/processed/grid5m`, add `--grid <folder>`. The RAD files must be in `data/rad` (step 1); without them the export still runs but has no radiation fields. Rover positions come from `ronald/waypoints_con_minerales.csv`.
+3. **Export everything the app needs (about 10–20 s, about 360 MB RAM).** If you built the grid somewhere other than `data/processed/grid5m`, add `--grid <folder>`. The RAD files must be in `data/rad` (step 1); without them the export still runs but has no radiation fields. Rover positions come from `ronald/rover_waypoints_minerals.csv`.
    ```bash
-   python3 -m routing.export_handoff --stops ronald/paradas_propuestas.csv --photos ronald/tabla_fotos.csv \
+   python3 -m routing.export_handoff --stops ronald/proposed_stops.csv --photos ronald/photo_table.csv \
        --option A --base-lat 18.452739 --base-lon 77.405768 --out base44_handoff
    ```
 4. **Tests:** `python3 -m pytest -q tests` — 49 tests (11 engine, 38 API). They need the grid from step 2,

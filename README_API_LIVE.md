@@ -246,7 +246,7 @@ The `*.run.app` URL works right away. For the demo, give the app that URL; the c
 3. **Warning text.** The warning sentence is written inline in `export_handoff.main()`, so the API keeps a copy of the same format string (`Engine.warnings`). The tests compare it with all 28 saved routes. If you move it into a function, the API can call it.
 4. **Grid size.** The grid is the same window as the export: farthest stop + 800 m, about ±1,373 m. That is what makes the routes come out identical. A point outside it returns 422.
 5. **Terrain point minerals.** `/api/terrain/point` uses the engine's `GROUPS` (1 olivine, 2 carbonate, 3/9/10 clay), so classes such as 4 "Olivine + Smectite" get `group: null`.
-6. **Your step-4 command.** It needs `--grid data/grid5m_jezero_crop`, because the default is `data/processed/grid5m`. It also needs `ronald/waypoints_con_minerales.csv` for `rover_positions.json`. I added that file.
+6. **Your step-4 command.** The default grid folder is `data/processed/grid5m`, which is what `processing/build_grid.py` writes; set `MARSWALK_GRID` if yours is elsewhere. It also needs `ronald/rover_waypoints_minerals.csv` for `rover_positions.json`. I added that file.
 7. **Stable order for mineral patches.** See the `minerals.json` note in the test results section above.
 
 ## Use of AI tools
