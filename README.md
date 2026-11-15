@@ -33,7 +33,35 @@ Jezero Marswalk plans walks for an astronaut on foot in Jezero crater, Mars. It 
 | Olivine stops | 1127–1257 m | 50–52 min | 7.2–8.6° | 10.0–12.1° |
 | Carbonate stops | 1163–1242 m | 58–60 min | 21.8–28.0° | 33.4–39.5° |
 
-The carbonates sit on top of an escarpment: their routes cross 34–40° ground diagonally, so the walking grade stays at 28° or less. That diagonal has a side slope of roughly 33°, and **neither Tobler nor Pandolf models side slope**, which is where falls happen. Both equations are also being applied well outside the grades they were measured on. We report the figure rather than route around the best science in the area, but a planner should treat these two routes as the ones needing human review. Neither equation penalises side slope, and the validation section below shows what that costs: the model buys a gentler walking grade with more steep ground. A side-slope penalty is the first fix. Anything above 20° is reported as a **warning** (team decision), never silently hidden.
+The carbonates sit on top of an escarpment: their routes cross 34–40° ground diagonally, so the
+walking grade stays at 28° or less. That diagonal has a side slope, and **neither Tobler nor
+Pandolf models side slope**, which is where falls happen: both were measured walking straight up
+or down. Both equations are also being applied well outside the grades they were measured on.
+
+So we measure it. A step across a hillside splits the terrain's steepest slope into the grade
+along the direction of travel and the side slope across it,
+`tan(terrain)² = tan(grade)² + tan(side)²`, which follows from data already on the grid. Every
+route and segment reports `max_side_slope_deg` and `m_side_slope_steeper_than_20deg`. The
+carbonate routes reach **27.8°** of side slope, with 26 m above the 20° reference.
+
+`SIDE_SLOPE_WEIGHT` in `routing/config.py` can also price it, by adding a fraction of the side
+slope to the grade Pandolf sees. It ships at **0**, which measures without pricing, because no
+measurement exists for a suited astronaut traversing a Martian hillside and the weight would be
+ours. What the weight would change is measured rather than guessed:
+
+| `SIDE_SLOPE_WEIGHT` | Tour distance | Worst side slope | Metres above 20° side slope, all 28 routes | Metres above 20° ground |
+|---|---|---|---|---|
+| **0 (shipped)** | 2740 m | 27.8° | 570 | 1553 |
+| 0.25 | 2739 m | 15.4° | 215 | 1036 |
+| 0.5 | 2765 m | 12.6° | 210 | 999 |
+| 1.0 | 2820 m | 10.4° | 205 | 972 |
+
+The useful part is not the number we would pick. It is that **the benefit arrives at 0.25 and then
+flattens**: any penalty at all removes about 62% of the side-slope exposure, the first quarter of
+it costs no distance at all (2740 m against 2739 m), and raising the weight to 1.0 buys 10 more
+metres for 3% more walking. The conclusion does not depend on the coefficient, which is the usual
+objection to assuming one. Anything above 20° is reported as a **warning** (team decision), never
+silently hidden.
 
 ## Method
 
@@ -119,8 +147,8 @@ pole, of anywhere with elevation data, give it a base latitude and longitude,
 and the same pipeline produces the same outputs. Layers that are missing simply
 drop out of the cost model instead of breaking it.
 
-**Better numbers are a config edit.** `routing/config.py` carries 10 constants
-marked SOURCED and 10 marked ASSUMPTION, each with its reference or its reason.
+**Better numbers are a config edit.** `routing/config.py` carries 29 constants,
+each marked SOURCED with its reference or ASSUMPTION with its reason.
 When a real Mars EVA duration, a measured walking speed or a true suit
 consumption rate is published, it replaces one labelled line. No equation in the
 planner changes, and the tests immediately show what moved.
@@ -143,7 +171,7 @@ step, not new mathematics.
 **The loop that closes it: measured walks.** Every number this engine produces
 rests on a model that has never been walked. Tobler's curve is from terrestrial
 hikers, Pandolf's equation from loaded soldiers on Earth, the 1200 BTU/h rate
-from EVA planning; `routing/config.py` labels 10 of its 20 constants ASSUMPTION
+from EVA planning; `routing/config.py` labels more than half of its 29 constants ASSUMPTION
 for exactly this reason. The app already keeps a trip log: the astronaut saves a
 route they chose and it stays on their record. **Today that log lives only in the
 browser and is not read back.** The step it exists for is to record what actually
@@ -177,7 +205,16 @@ independent of how many stops there are.
 - MEDA has **no published wind** data after sol 315, so we show pressure only.
 - Stop photos come from the nearest rover position, 48–294 m away; the camera direction is not confirmed.
 
-**Supply while standing.** `relative_effort` counts walking only. Pandolf's standing term gives a rate of 0.5 relative to flat walking, so 30 minutes at a stop costs about 0.25 h of supply, which our route figures do not include. Adding it multiplies the published supply figures by 1.6 on average across the 28 routes: the full six-stop tour goes from 1.49 h to 2.99 h, or from 19% to 37% of an 8 h suit. **No route changes feasibility**, because the 6 h and 8 h flags are time-based and the time does include the stops, and because the worst case is still 37% of the suit. Emergency mode is unaffected: an emergency walk has no science stops. The 0.5 rate is a lower bound, since real science work costs more than standing still. Adding the dwell term to the exported supply figures is the first item on our fix list.
+**Supply while standing (fixed).** `relative_effort` counted walking only, so a route with a
+30 minute science stop understated what the suit spends. Pandolf with V = 0 leaves the standing
+term alone, which is exactly half the flat walking rate, so `standing_rel()` derives 0.5 from the
+constants already in `config.py` rather than adding one. Every route now carries
+`supply_h_walking`, `supply_h_science`, `supply_h_total` and `supply_pct_of_suit`. Counting the
+stops multiplies the old figures by 1.6 on average: the six-stop tour goes from 1.49 h to
+**2.99 h, 37% of an 8 h suit**, and the worst single round trip reaches 13%. No route changed
+feasibility, since the 6 h and 8 h flags are time-based and time always included the stops.
+Emergency mode is unaffected: an emergency walk has no science stops. The 0.5 rate is still a
+**lower bound**, because sampling and handling tools cost more than standing still.
 
 ## Radiation estimate
 
@@ -188,7 +225,7 @@ Each route carries `radiation_dose_estimate_uGy`, and each shelter a dose rate a
 A FastAPI service wraps the same routing engine. It is **not connected to the live app**: marseva.us reads the saved files in `outputs/`, so it can only show the routes that were computed ahead of time. The API is the piece that would let the app ask for a route to any point; it runs and passes its tests, but it is not deployed. Valeria built the first version; Ronald finished it on the current engine. Every number comes from `routing.export_handoff.Exporter`, so the API and the saved files share one source.
 
 - **Endpoints:** `POST /api/routes/fastest`, `/easiest`, `/pareto`, `/mineral-target`, `/time-budget`, `/via-shelter`; `POST /api/emergency/reachable`; `GET /api/health`, `/api/scientific-destinations`, `/api/terrain/layers`, `/api/terrain/point`. A position can be a waypoint id, east/north metres from the habitat, or lat/lon. Docs at `/docs`.
-- **Tests:** 49 pass (11 engine tests + 38 API tests), on Python 3.13 and 3.10 (the Dockerfile version). All 28 saved routes and all 4 emergency scenarios come out identical, field by field, from the live API; a test fails if any saved route is left unchecked.
+- **Tests:** 52 pass (14 engine tests + 38 API tests), on Python 3.13 and 3.10 (the Dockerfile version). All 28 saved routes and all 4 emergency scenarios come out identical, field by field, from the live API; a test fails if any saved route is left unchecked.
 - **Coverage:** the exported map window, about ±1.37 km from the habitat. Unknown or out-of-bounds positions return an error (422), never an estimate.
 - **Performance:** about 10 s to start, about 0.3 s per route, about 360 MB of memory.
 - **Deploy:** `REGION=<region> bash tools/deploy_cloud_run.sh` deploys to Cloud Run and runs `tools/check_live_api.py` (44 live checks) against the new URL.
@@ -196,7 +233,7 @@ A FastAPI service wraps the same routing engine. It is **not connected to the li
 
 ## Use of AI tools
 
-The project idea, challenge choice, site, stops and every design decision (cost model, slope warnings instead of bans, what counts as a shelter or a comms point) are the team's. We used an AI assistant (Anthropic's Claude) to help write and debug the Python processing and routing code in this repository, to process and check the data files, to draft documentation, and to edit the text of this submission. The routing API (`api/`, `tests/test_api.py`, `tools/`) was written by Ronald with the help of Claude (Anthropic); he directed the work and ran the checks, and the 49 tests compare every answer with the engine-generated files. Valeria's earlier adapter was built with help from OpenAI Codex. The front end at marseva.us was built on Base44, which is itself an AI app builder: we specified the behaviour and the data it reads, and it generated the interface code. Every number in the outputs comes from running this code on the NASA data listed below. Rover photos, positions and the validation were selected and checked by the team.
+The project idea, challenge choice, site, stops and every design decision (cost model, slope warnings instead of bans, what counts as a shelter or a comms point) are the team's. We used an AI assistant (Anthropic's Claude) to help write and debug the Python processing and routing code in this repository, to process and check the data files, to draft documentation, and to edit the text of this submission. The routing API (`api/`, `tests/test_api.py`, `tools/`) was written by Ronald with the help of Claude (Anthropic); he directed the work and ran the checks, and the 52 tests compare every answer with the engine-generated files. Valeria's earlier adapter was built with help from OpenAI Codex. The front end at marseva.us was built on Base44, which is itself an AI app builder: we specified the behaviour and the data it reads, and it generated the interface code. Every number in the outputs comes from running this code on the NASA data listed below. Rover photos, positions and the validation were selected and checked by the team.
 
 ## What is in this repository
 
@@ -226,7 +263,7 @@ NASA rasters  →  build_grid.py →  terrain.py → planner.py  →  JSON + map
 | `curated/` | The inputs the team compiled by hand: the 6 science stops, Perseverance positions, the photo table and the MEDA file index. Its `README.md` is the key to the Spanish column names |
 | `outputs/` | **The output.** Nine JSON files and eight map layers, generated by `routing/export_handoff.py`. Nothing here is typed by hand. Opens with its own `README.md` |
 | `api/` | The routing API (FastAPI) that serves the same objects live, plus its contract, its deployment notes and `openapi.json` |
-| `tests/` | 11 engine tests on synthetic terrain, 38 API tests against the saved outputs |
+| `tests/` | 14 engine tests on synthetic terrain, 38 API tests against the saved outputs |
 | `docs/` | Validation figure and tables, photo and MEDA notes, and the prompt used to build the front end |
 | `tools/` | Deployment script and the 44 live checks run against a deployed API |
 | `scripts/` | `download_rad.sh`, which fetches the Curiosity RAD files from CDAWeb |
@@ -275,7 +312,7 @@ pip install -r api/requirements-api.txt    # only for the API and its tests (ste
    ```
    The file is about 20 MB, which is why it is not committed. Steps 3 and 4 together produce every
    file the front end reads.
-5. **Tests:** `python3 -m pytest -q tests` — 49 tests (11 engine, 38 API). The 11 engine tests run on
+5. **Tests:** `python3 -m pytest -q tests` — 52 tests (14 engine, 38 API). The 14 engine tests run on
    synthetic terrain and need nothing from steps 1 to 4: `python3 -m pytest -q tests/test_planner.py`
    passes on a fresh clone. The 38 API tests need the grid from step 2, because the API loads the real
    terrain at startup, and the exported files from step 3. If your grid is not at

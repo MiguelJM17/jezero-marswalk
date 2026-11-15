@@ -5,7 +5,7 @@ same JSON objects as the saved files in `outputs/`. It exists so the front end c
 ask for a route to **any** point, instead of only the 28 routes computed ahead of
 time.
 
-**Status: built and tested locally, not deployed.** 49 tests pass (11 engine, 38
+**Status: built and tested locally, not deployed.** 52 tests pass (14 engine, 38
 API), on Python 3.13 and on the Dockerfile's 3.10. All 28 saved routes and all 4
 emergency scenarios come out identical, field by field, from the live service.
 

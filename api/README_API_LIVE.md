@@ -18,7 +18,7 @@ An earlier adapter was not available when this was built, so `api/main.py` was w
 
 ## Test results
 
-**49 tests pass.** That is the 11 engine tests in `tests/test_planner.py` plus 38 API tests in `tests/test_api.py`. They were run on Python 3.13 and on Python 3.10 with the same packages as the Dockerfile.
+**52 tests pass.** That is the 14 engine tests in `tests/test_planner.py` plus 38 API tests in `tests/test_api.py`. They were run on Python 3.13 and on Python 3.10 with the same packages as the Dockerfile.
 
 The API tests compare the live answers with the saved files, field by field. That includes the geometry, the lon/lat lists, the segments, the warnings and the radiation estimate.
 
@@ -71,7 +71,7 @@ One harmless difference remains, in `minerals.json`: `clay_patch_13` and `clay_p
 
 ```bash
 pip install -r requirements.txt -r api/requirements-api.txt
-python -m pytest -q                    # 49 passed
+python -m pytest -q                    # 52 passed
 uvicorn api.main:app --port 8080
 ```
 
@@ -265,4 +265,4 @@ Valeria's separate adapter was built with Codex assistance, as stated in her REA
 ## What to say in the presentation
 
 - **If it is deployed and connected:** "The routing API is live on Google Cloud Run and the app calls it."
-- **If not:** "The routing API is built and tested locally (49 tests pass); cloud deployment is next."
+- **If not:** "The routing API is built and tested locally (52 tests pass); cloud deployment is next."
