@@ -4,6 +4,10 @@
 
 NASA Space Apps Challenge 2026 · Team **Euler's Disappointments** · Challenge: a layered map to plan a Marswalk.
 
+[![tests](https://github.com/MiguelJM17/jezero-marswalk/actions/workflows/tests.yml/badge.svg)](https://github.com/MiguelJM17/jezero-marswalk/actions/workflows/tests.yml)
+
+**Jump to:** [What the engine computes](#what-the-engine-computes) · [Method](#method) · [Validation against Perseverance's real path](#validation-against-perseverances-real-path-and-what-it-does-not-prove) · [What we do not know](#what-we-do-not-know-and-say-so) · [Repository layout](#repository-layout) · [Reproduce](#reproduce) · [NASA data](#nasa-data-and-resources)
+
 Jezero Marswalk plans walks for an astronaut on foot in Jezero crater, Mars. It turns NASA orbital and rover data into decisions:
 
 - **"I want to go to this mineral."** Pick probable carbonate, olivine or clay and get every route there and back, each with distance, time and effort.

@@ -68,7 +68,7 @@ DOWNHILL_MIN_REL = 1.0
 # default and reproduces every published route. 0.5 = a 30 deg side slope costs like a
 # 15 deg climb. Raising it makes the planner prefer longer routes that cross hillsides
 # less steeply; routes/*.json reports side slope either way.
-SIDE_SLOPE_WEIGHT = 0.0
+SIDE_SLOPE_WEIGHT = 0.5
 
 # ASSUMPTION: terrain difficulty multiplier (Pandolf's "terrain factor" idea, eta >= 1).
 #   eta = 1 + ROUGH_WEIGHT * roughness_deg / ROUGH_REF_DEG
@@ -105,3 +105,19 @@ SKYVIEW_AZIMUTHS = 16
 
 # ASSUMPTION: default time spent working at each science stop (user-editable).
 DEFAULT_DWELL_MIN = 30.0
+
+# ASSUMPTION: 16-connected routing graph (the 8 neighbours plus the 8 knight moves).
+# An 8-connected grid can only travel in multiples of 45 deg, so a route to a point on
+# an intermediate bearing is a staircase up to 8.2% longer than the straight line.
+# 16 headings bring that to 2.7%, at about twice the edges. A knight move spans two
+# cells, so it only exists when the cells it passes over are walkable as well.
+# Set to False for the 8-connected graph.
+NEIGH16 = True
+
+# ASSUMPTION: how far the ground under a knight move may deviate from the straight line
+# between its ends, in metres. A knight move is priced from its endpoints, so where the
+# ground between them is not close to that line the price would be wrong: a one-cell
+# ridge or crevasse would be flown over for free. Above this, the move is not an edge
+# and the route takes ordinary steps instead. 0.5 m over a span of 7-11 m is roughly a
+# 3 degree bump, which keeps knight moves on smooth ground.
+KNIGHT_MAX_DEVIATION_M = 0.5

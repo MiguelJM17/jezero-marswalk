@@ -25,7 +25,29 @@ from scipy.sparse.csgraph import dijkstra
 from . import config as C
 from .terrain import Area, blocked_mask, terrain_factor, warning_flags
 
-NEIGH = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+NEIGH8 = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+
+# Knight moves, which halve the headings a route must be built from. An 8-connected
+# grid can only travel in multiples of 45 deg, so reaching a point on an intermediate
+# bearing takes a staircase that is up to 8.2% longer than the straight line (worst
+# case 22.5 deg off an axis). Adding these eight brings that worst case to 2.7%, so
+# less of a route's extra length over a straight line is the grid rather than the
+# terrain. Each one spans two cells, so it is only an edge when the cells it passes
+# over are walkable too: see CORNERS. Set C.NEIGH16 = False for the 8-connected graph.
+NEIGH_KNIGHT = [(-1, -2), (-2, -1), (-2, 1), (-1, 2), (1, -2), (2, -1), (2, 1), (1, 2)]
+
+# The two cells a knight move passes between. Both must be walkable, or the move could
+# jump a one-cell crevasse, a data gap or a wall that no step could cross.
+def _corners(di, dj):
+    """The two cells the straight line of a knight move crosses between its ends."""
+    if abs(di) == 2:                       # (+-2, +-1): over (+-1, 0) and (+-1, dj)
+        return (di // 2, 0), (di // 2, dj)
+    return (0, dj // 2), (di, dj // 2)     # (+-1, +-2): over (0, +-1) and (di, +-1)
+
+
+CORNERS = {d: _corners(*d) for d in NEIGH_KNIGHT}
+
+NEIGH = NEIGH8 + (NEIGH_KNIGHT if getattr(C, "NEIGH16", True) else [])
 TAN_MAX = math.tan(math.radians(C.MAX_SLOPE_DEG))
 
 
@@ -97,6 +119,21 @@ class Planner:
             c0, c1 = max(0, -dj), W - max(0, dj)
             u_ok = ok[r0:r1, c0:c1]
             v_ok = ok[r0 + di:r1 + di, c0 + dj:c1 + dj]
+            corners = CORNERS.get((di, dj), ())
+            if corners:
+                # A knight move is priced from its two ends, so it is only honest where the
+                # ground between them follows the straight line. Require every cell it passes
+                # over to be walkable, and to sit within KNIGHT_MAX_DEVIATION_M of the line:
+                # otherwise the move would fly over a thin ridge or across a crevasse and be
+                # charged as if the ground were flat.
+                zu = z[r0:r1, c0:c1]
+                zv = z[r0 + di:r1 + di, c0 + dj:c1 + dj]
+                for k, (ci, cj) in enumerate(corners):
+                    v_ok = v_ok & ok[r0 + ci:r1 + ci, c0 + cj:c1 + cj]
+                    f = math.hypot(cj * area.dx, ci * area.dy) / math.hypot(dj * area.dx, di * area.dy)
+                    zc = z[r0 + ci:r1 + ci, c0 + cj:c1 + cj]
+                    dev = np.abs(zc - (zu + (zv - zu) * f))
+                    v_ok = v_ok & (np.nan_to_num(dev, nan=np.inf) <= C.KNIGHT_MAX_DEVIATION_M)
             dz = z[r0 + di:r1 + di, c0 + dj:c1 + dj] - z[r0:r1, c0:c1]
             dist = math.hypot(dj * area.dx, di * area.dy)
             s = dz / dist

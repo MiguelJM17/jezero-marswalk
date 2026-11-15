@@ -1,0 +1,28 @@
+name: tests
+
+# The 14 engine tests run on synthetic terrain, so they need no NASA data and no
+# grid: a clean clone plus requirements.txt is enough. The 38 API tests need the
+# 1 m HiRISE DTM, which is far too large for CI, and skip themselves here with the
+# reason printed.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  engine:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.13"]   # 3.10 is the Dockerfile's version
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m pytest -q tests -rs

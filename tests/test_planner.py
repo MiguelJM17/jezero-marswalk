@@ -112,6 +112,25 @@ def test_tour_respects_budget():
     assert t is not None and t["order"] == (0, 1, 0)
 
 
+def test_knight_moves_do_not_fly_over_a_thin_ridge():
+    """A knight move spans two cells and is priced from its ends, so it must not exist
+    where a one-cell ridge sits between them: crossing would otherwise be free."""
+    z = np.zeros((11, 11))
+    z[:, 5] = 6.0                      # a one-cell ridge across the whole map
+    p = Planner(make_area(z))
+    st = p.stats(p.path((5, 0), (5, 10), 0.0))
+    assert st["m_above_slope_limit"] > 0       # the ridge is climbed, not skipped
+    assert st["climb_m"] >= 6.0 - 1e-9
+
+
+def test_knight_moves_shorten_a_diagonal_on_open_ground():
+    """16 headings beat 8 on a bearing between the axes: the staircase gets shorter."""
+    p = Planner(make_area(np.zeros((41, 41))))
+    d16 = p.stats(p.path((0, 0), (10, 20), 1.0))["distance_m"]
+    straight = math.hypot(20 * p.a.dx, 10 * p.a.dy)
+    assert d16 < straight * 1.03               # 8-connected would be about 8% long here
+
+
 def test_side_slope_splits_the_terrain_slope():
     """tan(terrain)^2 = tan(grade)^2 + tan(side)^2, so a 28 deg walking grade across
     40 deg ground is a 33 deg side slope, and walking straight up it is none."""
