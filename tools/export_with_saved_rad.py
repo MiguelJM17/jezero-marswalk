@@ -3,7 +3,7 @@
 import json, sys, os
 sys.path.insert(0, os.getcwd())
 import routing.export_handoff as E
-saved = json.load(open('base44_handoff/conditions.json'))['radiation']
+saved = json.load(open('outputs/conditions.json'))['radiation']
 keep = {k: v for k, v in saved.items() if k != 'median_uGy_per_hour'}
 E.rad_summary = lambda *a, **k: dict(keep)
 sys.argv = [sys.argv[0]] + sys.argv[1:]

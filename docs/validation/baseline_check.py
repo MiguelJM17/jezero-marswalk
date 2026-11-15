@@ -36,10 +36,10 @@ def main():
     S = A.slope if A.slope.max() > 2 else np.degrees(np.arctan(A.slope))
     r0, c0 = A.lonlat_to_rc(HAB_LON, HAB_LAT)
 
-    T = json.load(open(os.path.join(ROOT, "base44_handoff", "rover_traverse.json")))
+    T = json.load(open(os.path.join(ROOT, "outputs", "rover_traverse.json")))
     R = np.array([p for f in T["features"] for p in f["geometry"]["coordinates"]], float)
-    W = {x["id"]: x for x in json.load(open(os.path.join(ROOT, "base44_handoff", "waypoints.json")))["waypoints"]}
-    RT = {r["id"]: r for r in json.load(open(os.path.join(ROOT, "base44_handoff", "routes.json")))["routes"]}
+    W = {x["id"]: x for x in json.load(open(os.path.join(ROOT, "outputs", "waypoints.json")))["waypoints"]}
+    RT = {r["id"]: r for r in json.load(open(os.path.join(ROOT, "outputs", "routes.json")))["routes"]}
 
     def near(poly, buf=100.0):
         pts, _ = sample(poly)

@@ -7,7 +7,8 @@ the DTM's CRS and origin, at a coarser cell size (default 10 m).
 Layers written to data/processed/grid<R>m/:
   elevation.tif        mean elevation of the 1 m cells (m)
   slope.tif            slope from the R-m elevation grid (degrees)
-  slope1m_max.tif      steepest 1 m slope inside each cell (degrees)
+  slope1m_max.tif      steepest 1 m slope inside each cell (degrees); written for
+                       inspection (processing/check_grid.py) only, the router does not read it
   roughness.tif        std of the 1 m slope inside each cell (degrees)
   valid_frac.tif       fraction of 1 m cells with data
   thermal_inertia.tif  THEMIS TI resampled bilinearly (J m-2 K-1 s-1/2), 0 = no data

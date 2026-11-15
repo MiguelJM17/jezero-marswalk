@@ -2,12 +2,12 @@
 
 v1 · Nov 14, 2026 · Miguel
 
-The **endpoint names are the ones the Base44 app already uses** (app page `/data` → External API). The **response formats are the ones in `base44_handoff/`**. If Valeria builds exactly this, the app only needs the base URL in its Settings.
+The **endpoint names are the ones the Base44 app already uses** (app page `/data` → External API). The **response formats are the ones in `outputs/`**. If Valeria builds exactly this, the app only needs the base URL in its Settings.
 
 ## General rules
 - Base URL: `https://<server>/` (set in the app's Settings). Everything is JSON, UTF-8.
 - CORS: allow `https://jolly-mars-path-pilot.base44.app`.
-- Coordinates: `east_m` / `north_m` from the habitat (habitat_01 = 0,0), the same frame as `base44_handoff`. Every point also returns `lat`, `lon` and `elevation_m`.
+- Coordinates: `east_m` / `north_m` from the habitat (habitat_01 = 0,0), the same frame as `outputs`. Every point also returns `lat`, `lon` and `elevation_m`.
 - A **position** in a request can be any one of:
   - `{"waypoint_id": "carbonate_01"}`
   - `{"east_m": 120, "north_m": -340}`

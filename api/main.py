@@ -37,7 +37,7 @@ async def lifespan(app):
 
 
 app = FastAPI(title="Jezero Marswalk routing API", version="1.0",
-              description="Routes for astronauts walking in Jezero crater, Mars. Same JSON as base44_handoff/. "
+              description="Routes for astronauts walking in Jezero crater, Mars. Same JSON as outputs/. "
                           "relative_effort is in hours of suit supply at 1200 BTU/h (model, not verified); "
                           "oxygen_verified is always false.",
               lifespan=lifespan)

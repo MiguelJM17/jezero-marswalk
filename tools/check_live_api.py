@@ -1,4 +1,4 @@
-"""Check a running Marswalk API (local or Cloud Run) against base44_handoff/, field by field.
+"""Check a running Marswalk API (local or Cloud Run) against outputs/, field by field.
 
     python3 tools/check_live_api.py https://<URL>
     python3 tools/check_live_api.py https://<URL> --token "$(gcloud auth print-identity-token)"   # private service
@@ -18,7 +18,7 @@ import urllib.error
 import urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-H = os.path.join(HERE, "..", "base44_handoff")
+H = os.path.join(HERE, "..", "outputs")
 STOPS = ["olivine_01", "olivine_02", "carbonate_01", "carbonate_02", "clay_01", "clay_02"]
 SKIP = {"id", "type", "label", "start", "end"}
 PATHS = {"/api/emergency/reachable", "/api/health", "/api/routes/easiest", "/api/routes/fastest",

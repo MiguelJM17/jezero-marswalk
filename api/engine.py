@@ -1,12 +1,12 @@
 """Live route engine for the API.
 
 Wraps Miguel's unchanged routing/ package and builds the same JSON objects as
-base44_handoff/ (routes.json, emergency.json). Nothing here changes the model:
+outputs/ (routes.json, emergency.json). Nothing here changes the model:
 every number comes from routing/planner.py with routing/config.py.
 
 Every metric, segment, geometry and point object is built by
 routing.export_handoff.Exporter (Miguel's current engine, the one that produced the
-28-route base44_handoff), so the API and the saved files have a single source.
+28-route outputs), so the API and the saved files have a single source.
 This module only adds what an HTTP API needs: reading positions, errors, and
 running the engine for any start/destination instead of the fixed ones.
 """
@@ -25,7 +25,7 @@ from routing.terrain import line_of_sight, load_area, sky_blocked_fraction
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GRID_NAME = "grid5m_jezero_crop"
 GRID_DIR = os.environ.get("MARSWALK_GRID", os.path.join(ROOT, "data", "processed", "grid5m"))
-HANDOFF_DIR = os.environ.get("MARSWALK_HANDOFF", os.path.join(ROOT, "base44_handoff"))
+HANDOFF_DIR = os.environ.get("MARSWALK_HANDOFF", os.path.join(ROOT, "outputs"))
 HABITAT_LAT, HABITAT_LON = 18.452739, 77.405768
 R_MARS = 3396190.0
 BLOCK_REASON = {1: "no elevation data", 2: "west of the DTM artefact zone (lon < 77.35 E)",

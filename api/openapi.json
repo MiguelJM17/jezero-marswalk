@@ -2,7 +2,7 @@
  "openapi": "3.1.0",
  "info": {
   "title": "Jezero Marswalk routing API",
-  "description": "Routes for astronauts walking in Jezero crater, Mars. Same JSON as base44_handoff/. relative_effort is in hours of suit supply at 1200 BTU/h (model, not verified); oxygen_verified is always false.",
+  "description": "Routes for astronauts walking in Jezero crater, Mars. Same JSON as outputs/. relative_effort is in hours of suit supply at 1200 BTU/h (model, not verified); oxygen_verified is always false.",
   "version": "1.0"
  },
  "paths": {

@@ -4,7 +4,7 @@ Nov 14, 2026 · Euler's Disappointments
 
 **Status:** built and tested locally. **Not deployed yet.** There is no public URL until someone with access to the Google Cloud project runs the deploy commands in the deployment section.
 
-This is a FastAPI service that wraps Miguel's **current** routing engine (`routing/`, unchanged), the same code that produced `base44_handoff/`. It answers with the same JSON objects as the **28-route** handoff. The endpoints follow `API_CONTRACT.md` v1, which uses the paths the Base44 app already calls.
+This is a FastAPI service that wraps Miguel's **current** routing engine (`routing/`, unchanged), the same code that produced `outputs/`. It answers with the same JSON objects as the **28-route** handoff. The endpoints follow `API_CONTRACT.md` v1, which uses the paths the Base44 app already calls.
 
 **One source for every number.** Metrics, terrain slope, radiation, segments with the nearest safe place, geometry and point objects all come from `routing.export_handoff.Exporter`. `api/engine.py` sets up `Exporter` exactly like `export_handoff.main()`. It does not compute any field itself. It only reads positions, returns errors and runs the engine for any start or destination.
 
@@ -22,7 +22,7 @@ An earlier adapter was not available when this was built, so `api/main.py` was w
 
 The API tests compare the live answers with the saved files, field by field. That includes the geometry, the lon/lat lists, the segments, the warnings and the radiation estimate.
 
-| Saved file in `base44_handoff/` | Live call | Result |
+| Saved file in `outputs/` | Live call | Result |
 |---|---|---|
 | 6 `fastest` + 6 `easiest` routes | `POST /api/routes/fastest`, `/easiest` | identical |
 | 4 `pareto` routes ("balanced") | `POST /routes` (weights 1, 0.5, 0, as in the export) | identical |
@@ -36,7 +36,7 @@ That covers **all 28 saved routes**. A test (`test_all_28_saved_routes_are_check
 **Regenerating the handoff with the new engine (Miguel's step 4).** I ran `routing.export_handoff` with the 28-route engine:
 - It gives 28 routes, 4 emergency scenarios, 13 waypoints and 16 mineral patches.
 - It takes about 20 s.
-- `routes.json`, `emergency.json`, `waypoints.json`, `conditions.json`, `mission_config.json`, `layers_manifest.json`, `route_model.json` and `rover_positions.json` come out **byte for byte identical** to `base44_handoff/`.
+- `routes.json`, `emergency.json`, `waypoints.json`, `conditions.json`, `mission_config.json`, `layers_manifest.json`, `route_model.json` and `rover_positions.json` come out **byte for byte identical** to `outputs/`.
 - The map PNGs have identical pixels. Only the PNG compression bytes differ.
 
 Two inputs are not in `data/`, so I had to supply them:

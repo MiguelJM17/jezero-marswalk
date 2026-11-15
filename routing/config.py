@@ -90,7 +90,7 @@ EMERGENCY_MARGIN = 0.25
 BASE_ANTENNA_H_M = 3.0
 SUIT_ANTENNA_H_M = 1.8
 # ASSUMPTION: horizon search radius and number of azimuths for sky-view.
-SKYVIEW_RADIUS_M = 1000.0
+SKYVIEW_RADIUS_M = 500.0
 SKYVIEW_AZIMUTHS = 16
 
 # ASSUMPTION: default time spent working at each science stop (user-editable).

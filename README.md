@@ -11,7 +11,7 @@ Jezero Marswalk plans walks for an astronaut on foot in Jezero crater, Mars. It 
 - **Emergency.** Lost comms or a broken part? See which shelters, communication points or the habitat you can still reach with the suit supply you have left, keeping a reserve.
 - **Stop photos.** Real Perseverance photos at each stop, with the mineral and the MEDA pressure measured there.
 
-**See it: https://marseva.us** — a front end built on Base44 to look around the crater and compare the routes. It reads the precomputed files in `base44_handoff/`, so it is a way to visualise what the engine produced rather than the full system described below.
+**See it: https://marseva.us** — a front end built on Base44 to look around the crater and compare the routes. It reads the precomputed files in `outputs/`, so it is a way to visualise what the engine produced rather than the full system described below.
 
 ---
 
@@ -40,7 +40,7 @@ The carbonates sit on top of an escarpment: their routes cross 34–40° ground 
 1. **Common grid.** All layers are resampled to the same 5 m grid in the DTM's equirectangular projection (Mars 2000 sphere, R = 3,396,190 m). Ground east distance is corrected by cos(latitude) (×0.948 at Jezero). Roughness is the standard deviation of the 1 m slope inside each 5 m cell, which keeps rough ground from being flattened by averaging. A HiRISE DTM resolves detail coarser than its 1 m posting, so boulders of a metre or two are still invisible to it.
 2. **Graph.** Each cell is a node connected to its 8 neighbours. Edges are directed, because uphill costs more than downhill. Forbidden cells (no edge) are cells without elevation, thermal inertia below 100 (possibly not load-bearing; none in this area) and a DTM artefact strip west of lon 77.35° E (our assumption; far from the area).
 3. **Time.** Tobler's hiking function, scaled so that flat ground gives 3.6 km/h, the Apollo planners' walk-back speed.
-4. **Effort.** Pandolf's metabolic equation (no load), with a terrain factor from roughness and soft soil (thermal inertia). Downhill is counted as flat **in the effort weight only** (`DOWNHILL_MIN_REL`), so a steep descent is never scored as cheap. The time weight is Tobler's curve unmodified, which is fastest on a gentle descent, as walking actually is. Effort is expressed in **hours of suit supply at 1200 BTU/h**: a model estimate, **not verified for Mars**.
+4. **Effort.** Pandolf's metabolic equation (no load), with a terrain factor from roughness and soft soil (thermal inertia). Downhill is counted as flat grade **in the effort weight only**: `DOWNHILL_MIN_REL` switches that clamp on, but it is not a floor on the rate, and the metabolic rate can still fall below flat on a descent, to 0.62 at a 30% grade, because the speed term shrinks. The effort of a step never falls below that of a flat step of the same horizontal length, which we checked by sweeping the grades, but that holds because Tobler lengthens the time enough to compensate, not because of the clamp. The time weight is Tobler's curve unmodified, which is fastest on a gentle descent, as walking actually is. Effort is expressed in **hours of suit supply at 1200 BTU/h**: a model estimate, **not verified for Mars**.
 5. **Search.** Dijkstra's algorithm (scipy.sparse.csgraph) on about 2.5 million edges. The fastest route minimises time, the easiest minimises effort, and sweeping a blend of the two weights gives non-dominated alternatives. Sweeping a linear blend only reaches the convex hull of the trade-off curve, so these are non-dominated routes found by that sweep, not the complete Pareto front. Multi-stop order is an exhaustive search. Emergency mode is one Dijkstra from the astronaut's position, filtered by the usable suit supply (25% reserve, team assumption).
 6. **Shelters and comms.** Shelters are walkable cells (≤ 20°) where the terrain hides the most sky, using horizon angles over 500 m in 16 directions: a geometric proxy, not a life-support shelter. A communication point is a walkable cell with a straight line of sight to a 3 m antenna at the habitat, with the suit antenna at 1.8 m (assumed heights).
 
@@ -78,6 +78,13 @@ line, and on the two carbonate stops they cross **more** ground above 20°, not 
 walking grade for a longer diagonal across the escarpment. It is also the clearest argument for the
 calibration loop described below, because no measurement exists to say which of those two trades a suited
 astronaut should prefer.
+
+Part of the extra length is not the cost model at all. An 8-connected grid can only travel in multiples
+of 45°, so reaching a point on an intermediate bearing requires a staircase, which adds up to 8.2% in the
+worst case (a bearing 22.5° off the axis). The clay routes show it: they cross nearly flat ground and
+still come out about 4% longer than the straight line. Separating grid quantisation from genuine terrain
+avoidance needs a 16-connected grid or path smoothing. Until then, the 4–13% figure is an **upper bound**
+on how much of the detour the cost model is responsible for.
 
 Reproduce both tables: `MARSWALK_GRID=<grid> python3 docs/validation/baseline_check.py`
 (output saved in `docs/validation/baseline_check.txt`). The per-route distance table is
@@ -170,28 +177,30 @@ independent of how many stops there are.
 - MEDA has **no published wind** data after sol 315, so we show pressure only.
 - Stop photos come from the nearest rover position, 48–294 m away; the camera direction is not confirmed.
 
+**Supply while standing.** `relative_effort` counts walking only. Pandolf's standing term gives a rate of 0.5 relative to flat walking, so 30 minutes at a stop costs about 0.25 h of supply, which our route figures do not include. Adding it multiplies the published supply figures by 1.6 on average across the 28 routes: the full six-stop tour goes from 1.49 h to 2.99 h, or from 19% to 37% of an 8 h suit. **No route changes feasibility**, because the 6 h and 8 h flags are time-based and the time does include the stops, and because the worst case is still 37% of the suit. Emergency mode is unaffected: an emergency walk has no science stops. The 0.5 rate is a lower bound, since real science work costs more than standing still. Adding the dwell term to the exported supply figures is the first item on our fix list.
+
 ## Radiation estimate
 
-Each route carries `radiation_dose_estimate_uGy`, and each shelter a dose rate and its saving against open sky (18–21%). The model scales the dose by the fraction of sky the terrain hides, which treats the sky as uniformly bright. The sky a ridge hides is near the horizon, and radiation arriving from there crosses more atmosphere, so the real saving is **at most** that fraction. These are partial shelters: a fifth less dose, not a safe room. The estimate is walking time × the Curiosity RAD median rate (5.42 µGy/h) × (1 − fraction of sky hidden by terrain). For example, the full 6-stop tour is about 4.8 µGy while walking. This is a **comparison tool, not a dose prediction**: the rate was measured in Gale crater, and terrain shielding is approximated geometrically (see `base44_handoff/route_model.json` → `radiation`).
+Each route carries `radiation_dose_estimate_uGy`, and each shelter a dose rate and its saving against open sky (18–21%). The model scales the dose by the fraction of sky the terrain hides, which treats the sky as uniformly bright. The sky a ridge hides is near the horizon, and radiation arriving from there crosses more atmosphere, so the real saving is **at most** that fraction. These are partial shelters: a fifth less dose, not a safe room. The estimate is walking time × the Curiosity RAD median rate (5.42 µGy/h) × (1 − fraction of sky hidden by terrain). For example, the full 6-stop tour is about 4.8 µGy while walking. This is a **comparison tool, not a dose prediction**: the rate was measured in Gale crater, and terrain shielding is approximated geometrically (see `outputs/route_model.json` → `radiation`).
 
 ## Routing API (status: built and tested locally, not deployed yet)
 
-A FastAPI service wraps the same routing engine. It is **not connected to the live app**: marseva.us reads the saved files in `base44_handoff/`, so it can only show the routes that were computed ahead of time. The API is the piece that would let the app ask for a route to any point; it runs and passes its tests, but it is not deployed. Valeria built the first version; Ronald finished it on the current engine. Every number comes from `routing.export_handoff.Exporter`, so the API and the saved files share one source.
+A FastAPI service wraps the same routing engine. It is **not connected to the live app**: marseva.us reads the saved files in `outputs/`, so it can only show the routes that were computed ahead of time. The API is the piece that would let the app ask for a route to any point; it runs and passes its tests, but it is not deployed. Valeria built the first version; Ronald finished it on the current engine. Every number comes from `routing.export_handoff.Exporter`, so the API and the saved files share one source.
 
 - **Endpoints:** `POST /api/routes/fastest`, `/easiest`, `/pareto`, `/mineral-target`, `/time-budget`, `/via-shelter`; `POST /api/emergency/reachable`; `GET /api/health`, `/api/scientific-destinations`, `/api/terrain/layers`, `/api/terrain/point`. A position can be a waypoint id, east/north metres from the habitat, or lat/lon. Docs at `/docs`.
 - **Tests:** 49 pass (11 engine tests + 38 API tests), on Python 3.13 and 3.10 (the Dockerfile version). All 28 saved routes and all 4 emergency scenarios come out identical, field by field, from the live API; a test fails if any saved route is left unchecked.
 - **Coverage:** the exported map window, about ±1.37 km from the habitat. Unknown or out-of-bounds positions return an error (422), never an estimate.
 - **Performance:** about 10 s to start, about 0.3 s per route, about 360 MB of memory.
 - **Deploy:** `REGION=<region> bash tools/deploy_cloud_run.sh` deploys to Cloud Run and runs `tools/check_live_api.py` (44 live checks) against the new URL.
-- **Not done yet:** Cloud Run deployment and connection to the Base44 app. Until then the app uses the precomputed files in `base44_handoff/`, which stay as the fallback.
+- **Not done yet:** Cloud Run deployment and connection to the Base44 app. Until then the app uses the precomputed files in `outputs/`, which stay as the fallback.
 
 ## Use of AI tools
 
-The project idea, challenge choice, site, stops and every design decision (cost model, slope warnings instead of bans, what counts as a shelter or a comms point) are the team's. We used an AI assistant (Anthropic's Claude) to help write and debug the Python processing and routing code in this repository, to process and check the data files, and to draft documentation. The routing API (`api/`, `tests/test_api.py`, `tools/`) was written by Ronald with the help of Claude (Anthropic); he directed the work and ran the checks, and the 49 tests compare every answer with the engine-generated files. Valeria's earlier adapter was built with help from OpenAI Codex. The front end at marseva.us was built on Base44, which is itself an AI app builder: we specified the behaviour and the data it reads, and it generated the interface code. Every number in the outputs comes from running this code on the NASA data listed below. Rover photos, positions and the validation were selected and checked by the team.
+The project idea, challenge choice, site, stops and every design decision (cost model, slope warnings instead of bans, what counts as a shelter or a comms point) are the team's. We used an AI assistant (Anthropic's Claude) to help write and debug the Python processing and routing code in this repository, to process and check the data files, to draft documentation, and to edit the text of this submission. The routing API (`api/`, `tests/test_api.py`, `tools/`) was written by Ronald with the help of Claude (Anthropic); he directed the work and ran the checks, and the 49 tests compare every answer with the engine-generated files. Valeria's earlier adapter was built with help from OpenAI Codex. The front end at marseva.us was built on Base44, which is itself an AI app builder: we specified the behaviour and the data it reads, and it generated the interface code. Every number in the outputs comes from running this code on the NASA data listed below. Rover photos, positions and the validation were selected and checked by the team.
 
 ## What is in this repository
 
-The engine, the data pipeline, the routing API and the outputs they produce. The front end at marseva.us was built on Base44, which does not let us export its source, so it is not here. Everything the front end displays does come from this repository: the JSON files and map layers in `base44_handoff/`.
+The engine, the data pipeline, the routing API and the outputs they produce. The front end at marseva.us was built on Base44, which does not let us export its source, so it is not here. Everything the front end displays does come from this repository: the JSON files and map layers in `outputs/`.
 
 ## Repository layout
 
@@ -199,7 +208,7 @@ The pipeline runs left to right. NASA rasters become one grid, the grid becomes 
 graph, the graph produces routes, and the routes are written out as JSON the app reads.
 
 ```
-data/            processing/      routing/                    base44_handoff/
+data/            processing/      routing/                    outputs/
 NASA rasters  →  build_grid.py →  terrain.py → planner.py  →  JSON + map layers
 (not committed)  (one 5 m grid)   (graph)      (Dijkstra)      (the output)
                                       ↑                            ↓
@@ -215,7 +224,7 @@ NASA rasters  →  build_grid.py →  terrain.py → planner.py  →  JSON + map
 | `processing/` | Turns the raw NASA files into the shared grid. `build_grid.py` writes the 5 m rasters; `meda_summary.py` summarises MEDA pressure; `rad_summary.py` reduces 315 RAD files to one dose rate; `check_grid.py` draws a quick-look figure of every layer |
 | `routing/` | The engine. `config.py` (every constant with its source), `terrain.py` (reads the grid, sky view, line of sight), `planner.py` (graph, Dijkstra, alternatives, tour, emergency), `export_handoff.py` and `export_grid.py` (write the outputs), `run_plan.py` and `plot_plan.py` |
 | `curated/` | The inputs the team compiled by hand: the 6 science stops, Perseverance positions, the photo table and the MEDA file index. Its `README.md` is the key to the Spanish column names |
-| `base44_handoff/` | **The output.** Nine JSON files and eight map layers, generated by `routing/export_handoff.py`. Nothing here is typed by hand. Start with its `README_sources.md` |
+| `outputs/` | **The output.** Nine JSON files and eight map layers, generated by `routing/export_handoff.py`. Nothing here is typed by hand. Start with its `README_sources.md` |
 | `api/` | The routing API (FastAPI) that serves the same objects live, plus its contract, its deployment notes and `openapi.json` |
 | `tests/` | 11 engine tests on synthetic terrain, 38 API tests against the saved outputs |
 | `docs/` | Validation figure and tables, photo and MEDA notes, and the prompt used to build the front end |
@@ -250,7 +259,7 @@ pip install -r requirements.txt
 3. **Export everything the app needs (about 10–20 s, about 360 MB RAM).** If you built the grid somewhere other than `data/processed/grid5m`, add `--grid <folder>`. The RAD files must be in `data/rad` (step 1); without them the export still runs but has no radiation fields. Rover positions come from `curated/rover_waypoints_minerals.csv`.
    ```bash
    python3 -m routing.export_handoff --stops curated/proposed_stops.csv --photos curated/photo_table.csv \
-       --option A --base-lat 18.452739 --base-lon 77.405768 --out base44_handoff
+       --option A --base-lat 18.452739 --base-lon 77.405768 --out outputs
    ```
 4. **Tests:** `python3 -m pytest -q tests` — 49 tests (11 engine, 38 API). They need the grid from step 2,
    because the API loads the real terrain at startup. If your grid is not at `data/processed/grid5m`,

@@ -2,7 +2,7 @@
 
 Usage (from the project root):
   python -m routing.export_handoff --stops curated/proposed_stops.csv --option A \
-      --base-lat 18.452739 --base-lon 77.405768 --out base44_handoff
+      --base-lat 18.452739 --base-lon 77.405768 --out outputs
 
 All values are computed from the processed NASA layers and the routing model in
 routing/config.py. Nothing is filled in by hand.
@@ -175,7 +175,7 @@ def main():
     ap.add_argument("--photos", default=None, help="Ronald's photo_table.csv")
     ap.add_argument("--meda", default="data/meda_pressure_summary.json", help="pressure summary from MEDA PS files")
     ap.add_argument("--rover", default="curated/rover_waypoints_minerals.csv", help="Perseverance end-of-drive positions (Ronald)")
-    ap.add_argument("--out", default="base44_handoff")
+    ap.add_argument("--out", default="outputs")
     A = ap.parse_args()
     t0 = time.time()
     os.makedirs(os.path.join(A.out, "map_layers"), exist_ok=True)

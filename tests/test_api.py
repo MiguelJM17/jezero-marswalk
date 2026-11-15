@@ -1,4 +1,4 @@
-"""API tests against the 28-route handoff (base44_handoff/). Real Jezero data."""
+"""API tests against the 28-route handoff (outputs/). Real Jezero data."""
 import json
 import os
 import sys
@@ -10,7 +10,7 @@ from fastapi.testclient import TestClient  # noqa: E402
 
 from api.main import app  # noqa: E402
 
-H = os.path.join(os.path.dirname(__file__), "..", "base44_handoff")
+H = os.path.join(os.path.dirname(__file__), "..", "outputs")
 ROUTES = {r["id"]: r for r in json.load(open(os.path.join(H, "routes.json")))["routes"]}
 EMERG = {s["id"]: s for s in json.load(open(os.path.join(H, "emergency.json")))["scenarios"]}
 STOPS = ["olivine_01", "olivine_02", "carbonate_01", "carbonate_02", "clay_01", "clay_02"]

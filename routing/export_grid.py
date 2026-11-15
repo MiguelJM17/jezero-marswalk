@@ -2,7 +2,7 @@
 { cell_size, bounds:{minX,minY,maxX,maxY}, elevation:[...], thermal_inertia:[...], minerals:{carbonate,olivine,clay}, crs }
 in local ENU metres from the habitat, on a square grid (resampled from the 5 m grid).
 
-python -m routing.export_grid --base-lat 18.452739 --base-lon 77.405768 --half 1400 --cell 10 --out base44_handoff/terrain_grid_10m.json
+python -m routing.export_grid --base-lat 18.452739 --base-lon 77.405768 --half 1400 --cell 10 --out outputs/terrain_grid_10m.json
 """
 import argparse
 import json
@@ -58,7 +58,7 @@ def main():
         "rows": n, "cols": n,
         "layout": "row-major; row 0 is the northern edge (maxY), column 0 the western edge (minX); value i*cols+j is the cell centre "
                   "at east = minX + (j+0.5)*cell_size, north = maxY - (i+0.5)*cell_size",
-        "crs": "local ENU metres from the habitat (habitat_01 = 0,0) at lat 18.452739, lon 77.405768 (planetocentric, east positive, Mars 2000 sphere R=3396190 m). Same frame as base44_handoff JSON files.",
+        "crs": "local ENU metres from the habitat (habitat_01 = 0,0) at lat 18.452739, lon 77.405768 (planetocentric, east positive, Mars 2000 sphere R=3396190 m). Same frame as outputs JSON files.",
         "elevation": flat(elev, 1),
         "slope_deg": flat(slope, 1),
         "roughness_deg": flat(rough, 2),
