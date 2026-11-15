@@ -24,7 +24,7 @@ from routing.terrain import line_of_sight, load_area, sky_blocked_fraction
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GRID_NAME = "grid5m_jezero_crop"
-GRID_DIR = os.environ.get("MARSWALK_GRID", os.path.join(ROOT, "data", GRID_NAME))
+GRID_DIR = os.environ.get("MARSWALK_GRID", os.path.join(ROOT, "data", "processed", "grid5m"))
 HANDOFF_DIR = os.environ.get("MARSWALK_HANDOFF", os.path.join(ROOT, "base44_handoff"))
 HABITAT_LAT, HABITAT_LON = 18.452739, 77.405768
 R_MARS = 3396190.0

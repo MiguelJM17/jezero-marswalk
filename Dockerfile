@@ -1,5 +1,8 @@
 # Jezero Marswalk routing API - Google Cloud Run (1 GiB, 1 CPU, min instances 0)
 FROM python:3.10-slim
+# rasterio needs libexpat at runtime; python:3.10-slim does not ship it
+RUN apt-get update -qq && apt-get install -y --no-install-recommends libexpat1 \
+    && rm -rf /var/lib/apt/lists/*
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PORT=8080
 WORKDIR /app
 COPY requirements.txt api/requirements-api.txt ./

@@ -117,7 +117,9 @@ pip install -r requirements.txt
    python3 -m routing.export_handoff --stops ronald/paradas_propuestas.csv --photos ronald/tabla_fotos.csv \
        --option A --base-lat 18.452739 --base-lon 77.405768 --out base44_handoff
    ```
-4. **Tests:** `python3 -m pytest -q tests`
+4. **Tests:** `python3 -m pytest -q tests` — 49 tests (11 engine, 38 API). They need the grid from step 2,
+   because the API loads the real terrain at startup. If your grid is not at `data/processed/grid5m`,
+   point to it first: `export MARSWALK_GRID=/path/to/grid5m`.
 
 ## NASA data and resources
 
