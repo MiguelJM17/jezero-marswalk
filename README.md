@@ -21,6 +21,7 @@ Jezero Marswalk plans walks for an astronaut on foot in Jezero crater, Mars. It 
 |---|---|
 | Site | Jezero crater; habitat at 18.452739° N, 77.405768° E (flat ground, 1.4° slope) |
 | Terrain model | 5 m grid built from the 1 m HiRISE DTM, THEMIS thermal inertia and the CRISM mineral map |
+| Missions used | Four: MRO (HiRISE, CRISM), Mars Odyssey (THEMIS), Mars 2020 (traverse, Mastcam-Z, Navcam, MEDA) and MSL (Curiosity RAD) — eight data products |
 | Science stops | 6 probable mineral sites (2 olivine, 2 carbonate, 2 clay/kaolinite), all within 574 m of the habitat and near Perseverance's real path |
 | Routes | 28 precomputed routes: fastest, easiest and Pareto alternatives to every stop (always round trip), 5 time-budget tours, 6 routes that pass by a shelter |
 | Safety | No point of any route is more than **7.5 min** from the habitat or a terrain shelter |
@@ -32,31 +33,55 @@ Jezero Marswalk plans walks for an astronaut on foot in Jezero crater, Mars. It 
 | Olivine stops | 1127–1257 m | 50–52 min | 7.2–8.6° | 10.0–12.1° |
 | Carbonate stops | 1163–1242 m | 58–60 min | 21.8–28.0° | 33.4–39.5° |
 
-The carbonates sit on top of an escarpment: their routes cross 34–40° ground diagonally, so the walking grade stays at 28° or less. Anything above 20° is reported as a **warning** (team decision), never silently hidden.
+The carbonates sit on top of an escarpment: their routes cross 34–40° ground diagonally, so the walking grade stays at 28° or less. That diagonal has a side slope of roughly 33°, and **neither Tobler nor Pandolf models side slope**, which is where falls happen. Both equations are also being applied well outside the grades they were measured on. We report the figure rather than route around the best science in the area, but a planner should treat these two routes as the ones needing human review. Anything above 20° is reported as a **warning** (team decision), never silently hidden.
 
 ## Method
 
-1. **Common grid.** All layers are resampled to the same 5 m grid in the DTM's equirectangular projection (Mars 2000 sphere, R = 3,396,190 m). Ground east distance is corrected by cos(latitude) (×0.948 at Jezero). Roughness is the standard deviation of the 1 m slope inside each 5 m cell, so boulder fields are not averaged away.
+1. **Common grid.** All layers are resampled to the same 5 m grid in the DTM's equirectangular projection (Mars 2000 sphere, R = 3,396,190 m). Ground east distance is corrected by cos(latitude) (×0.948 at Jezero). Roughness is the standard deviation of the 1 m slope inside each 5 m cell, which keeps rough ground from being flattened by averaging. A HiRISE DTM resolves detail coarser than its 1 m posting, so boulders of a metre or two are still invisible to it.
 2. **Graph.** Each cell is a node connected to its 8 neighbours. Edges are directed, because uphill costs more than downhill. Forbidden cells (no edge) are cells without elevation, thermal inertia below 100 (possibly not load-bearing; none in this area) and a DTM artefact strip west of lon 77.35° E (our assumption; far from the area).
 3. **Time.** Tobler's hiking function, scaled so that flat ground gives 3.6 km/h, the Apollo planners' walk-back speed.
-4. **Effort.** Pandolf's metabolic equation (no load), with a terrain factor from roughness and soft soil (thermal inertia). Downhill counts as flat. Effort is expressed in **hours of suit supply at 1200 BTU/h**: a model estimate, **not verified for Mars**.
-5. **Search.** Dijkstra's algorithm (scipy.sparse.csgraph) on about 2.5 million edges. The fastest route minimises time, the easiest minimises effort, and blended weights give the non-dominated alternatives (Pareto front). Multi-stop order is an exhaustive search. Emergency mode is one Dijkstra from the astronaut's position, filtered by the usable suit supply (25% reserve, team assumption).
+4. **Effort.** Pandolf's metabolic equation (no load), with a terrain factor from roughness and soft soil (thermal inertia). Downhill is counted as flat **in the effort weight only** (`DOWNHILL_MIN_REL`), so a steep descent is never scored as cheap. The time weight is Tobler's curve unmodified, which is fastest on a gentle descent, as walking actually is. Effort is expressed in **hours of suit supply at 1200 BTU/h**: a model estimate, **not verified for Mars**.
+5. **Search.** Dijkstra's algorithm (scipy.sparse.csgraph) on about 2.5 million edges. The fastest route minimises time, the easiest minimises effort, and sweeping a blend of the two weights gives non-dominated alternatives. Sweeping a linear blend only reaches the convex hull of the trade-off curve, so these are non-dominated routes found by that sweep, not the complete Pareto front. Multi-stop order is an exhaustive search. Emergency mode is one Dijkstra from the astronaut's position, filtered by the usable suit supply (25% reserve, team assumption).
 6. **Shelters and comms.** Shelters are walkable cells (≤ 20°) where the terrain hides the most sky, using horizon angles over 500 m in 16 directions: a geometric proxy, not a life-support shelter. A communication point is a walkable cell with a straight line of sight to a 3 m antenna at the habitat, with the suit antenna at 1.8 m (assumed heights).
 
 All constants live in [`routing/config.py`](routing/config.py), each labelled **SOURCED** (with its reference) or **ASSUMPTION**.
 
-## Validation against Perseverance's real path
+## Validation against Perseverance's real path, and what it does not prove
 
 We compared our routes with NASA's `M20_traverse.json` (Perseverance's actual drives, sols 401–762 in this area).
 
 ![Our routes vs Perseverance's path](docs/validation/routes_vs_rover.png)
 
-- Between 77% and 100% of each route to the clay and carbonate stops stays within 100 m of the rover's path. The route to clay 1 runs on top of it (16 m on average).
-- In 5 of the 6 stops, the largest separation is at the stop itself, which the rover never drove to.
-- The olivine stops are 271–293 m from the rover's path; the rover never entered that olivine patch.
-- The habitat is 22 m from the rover's path.
+Between 77 and 100 percent of each route to the clay and carbonate stops stays within 100 m of the rover's
+path, and the route to clay 1 runs on top of it (16 m on average). **On its own that number proves nothing**,
+because the stops were chosen near the rover's path in the first place. So we measured the baseline: a
+straight line drawn from the habitat to the same stop, ignoring the terrain completely.
 
-The rover chooses its path for science and wheel safety, not for human effort, so this checks that we use the same corridors, not that our routes are "correct". Full table: [`docs/validation/route_vs_rover.csv`](docs/validation/route_vs_rover.csv).
+| Stop | straight line, % within 100 m | our fastest route, % within 100 m |
+|---|---|---|
+| clay_01 | 100.0 | 100.0 |
+| clay_02 | 83.7 | 85.2 |
+| carbonate_01 | 91.5 | 83.3 |
+| carbonate_02 | 91.2 | 87.7 |
+| olivine_01 | 68.2 | 63.4 |
+| olivine_02 | 64.9 | 63.4 |
+| **mean** | **83.3** | **80.5** |
+
+A straight line scores slightly better than our routes. The honest reading is that this comparison is a
+**sanity check, not a validation of route quality**: it shows our routes stay inside the corridor
+Perseverance actually crossed instead of wandering into terrain no vehicle has ever touched. It does not
+show the routes are good, and we do not claim that it does.
+
+The same script measures the slope profile of both. Our routes are 4–13 percent longer than the straight
+line, and on the two carbonate stops they cross **more** ground above 20°, not less (65 m against 45 m, and
+100 m against 55 m). That is the cost model behaving as designed rather than a defect: it trades a gentler
+walking grade for a longer diagonal across the escarpment. It is also the clearest argument for the
+calibration loop described below, because no measurement exists to say which of those two trades a suited
+astronaut should prefer.
+
+Reproduce both tables: `MARSWALK_GRID=<grid> python3 docs/validation/baseline_check.py`
+(output saved in `docs/validation/baseline_check.txt`). The per-route distance table is
+[`docs/validation/route_vs_rover.csv`](docs/validation/route_vs_rover.csv).
 
 ## Why this scales
 
@@ -70,8 +95,11 @@ builds any of them, and nothing downstream is told which one it got: the planner
 reads the cell size out of `grid.json`.
 
 **More area costs close to linear time.** The grid we build already spans
-4,280 x 4,297 cells, 21.4 x 21.5 km, about 18.4 million cells of the whole
-crater. The routing window used for the submitted routes is a crop of that, not
+4,280 x 4,297 cells. Because ground east distance is corrected by cos(latitude),
+a cell is 4.74 m east by 5.0 m north on the ground, so the grid covers
+20.3 x 21.5 km, about 18.4 million cells. The routes in
+this submission are computed in a 3 x 3 km window around the habitat, roughly
+310,000 walkable cells and 2.5 million directed edges -- a crop of the grid, not
 the engine's ceiling. Dijkstra over an 8-connected grid has about eight edges
 per cell, so the work grows with the number of cells rather than exploding with
 the size of the map, and scipy's implementation returns the exact optimum, never
@@ -144,7 +172,7 @@ independent of how many stops there are.
 
 ## Radiation estimate
 
-Each route carries `radiation_dose_estimate_uGy`, and each shelter a dose rate and its saving against open sky (18–21%). The estimate is walking time × the Curiosity RAD median rate (5.42 µGy/h) × (1 − fraction of sky hidden by terrain). For example, the full 6-stop tour is about 4.8 µGy while walking. This is a **comparison tool, not a dose prediction**: the rate was measured in Gale crater, and terrain shielding is approximated geometrically (see `base44_handoff/route_model.json` → `radiation`).
+Each route carries `radiation_dose_estimate_uGy`, and each shelter a dose rate and its saving against open sky (18–21%). The model scales the dose by the fraction of sky the terrain hides, which treats the sky as uniformly bright. The sky a ridge hides is near the horizon, and radiation arriving from there crosses more atmosphere, so the real saving is **at most** that fraction. These are partial shelters: a fifth less dose, not a safe room. The estimate is walking time × the Curiosity RAD median rate (5.42 µGy/h) × (1 − fraction of sky hidden by terrain). For example, the full 6-stop tour is about 4.8 µGy while walking. This is a **comparison tool, not a dose prediction**: the rate was measured in Gale crater, and terrain shielding is approximated geometrically (see `base44_handoff/route_model.json` → `radiation`).
 
 ## Routing API (status: built and tested locally, not deployed yet)
 
@@ -159,7 +187,7 @@ A FastAPI service wraps the same routing engine. It is **not connected to the li
 
 ## Use of AI tools
 
-The project idea, challenge choice, site, stops and every design decision (cost model, slope warnings instead of bans, what counts as a shelter or a comms point) are the team's. We used an AI assistant (Anthropic's Claude) to help write and debug the Python processing and routing code in this repository, to process and check the data files, and to draft documentation. The routing API (`api/`, `tests/test_api.py`, `tools/`) was written by Ronald with the help of Claude (Anthropic); he directed the work and ran the checks, and the 49 tests compare every answer with the engine-generated files. Valeria's earlier adapter was built with help from OpenAI Codex. Every number in the outputs comes from running this code on the NASA data listed below. Rover photos, positions and the validation were selected and checked by the team.
+The project idea, challenge choice, site, stops and every design decision (cost model, slope warnings instead of bans, what counts as a shelter or a comms point) are the team's. We used an AI assistant (Anthropic's Claude) to help write and debug the Python processing and routing code in this repository, to process and check the data files, and to draft documentation. The routing API (`api/`, `tests/test_api.py`, `tools/`) was written by Ronald with the help of Claude (Anthropic); he directed the work and ran the checks, and the 49 tests compare every answer with the engine-generated files. Valeria's earlier adapter was built with help from OpenAI Codex. The front end at marseva.us was built on Base44, which is itself an AI app builder: we specified the behaviour and the data it reads, and it generated the interface code. Every number in the outputs comes from running this code on the NASA data listed below. Rover photos, positions and the validation were selected and checked by the team.
 
 ## What is in this repository
 
