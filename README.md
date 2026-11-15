@@ -9,9 +9,9 @@ Jezero Marswalk plans walks for an astronaut on foot in Jezero crater, Mars. It 
 - **"I want to go to this mineral."** Pick probable carbonate, olivine or clay and get every route there and back, each with distance, time and effort.
 - **"I have this much time."** Get the stops that fit in 1 to 8 hours, and the order to visit them.
 - **Emergency.** Lost comms or a broken part? See which shelters, communication points or the habitat you can still reach with the suit supply you have left, keeping a reserve.
-- **Helmet view.** Real Perseverance photos at each stop, with the mineral, the MEDA pressure measured there, and the walk back.
+- **Stop photos.** Real Perseverance photos at each stop, with the mineral and the MEDA pressure measured there.
 
-**Live app: https://marseva.us**  (front end built on Base44)
+**See it: https://marseva.us** — a front end built on Base44 to look around the crater and compare the routes. It reads the precomputed files in `base44_handoff/`, so it is a way to visualise what the engine produced rather than the full system described below.
 
 ---
 
@@ -30,7 +30,7 @@ Jezero Marswalk plans walks for an astronaut on foot in Jezero crater, Mars. It 
 |---|---|---|---|---|
 | Clay stops | 489–540 m | 38–39 min | 2.0–2.8° | 2.6–3.5° |
 | Olivine stops | 1127–1257 m | 50–52 min | 7.2–8.6° | 10.0–12.1° |
-| Carbonate stops | 1163–1242 m | 58–60 min | 21.8–28.0° ⚠️ | 33.4–39.5° ⚠️ |
+| Carbonate stops | 1163–1242 m | 58–60 min | 21.8–28.0° | 33.4–39.5° |
 
 The carbonates sit on top of an escarpment: their routes cross 34–40° ground diagonally, so the walking grade stays at 28° or less. Anything above 20° is reported as a **warning** (team decision), never silently hidden.
 
@@ -140,4 +140,4 @@ pip install -r requirements.txt
 
 ## Team
 
-Euler's Disappointments — Miguel (routing engine), Ronald (rover data, photos, MEDA, validation, routing API), Marylennis (app), Valeria (presentation, first version of the routing API), Liz (video and slides), Danilo.
+Euler's Disappointments — Miguel Jazzan · Ronald Aguirre · Marilennis Naranjo · Valeria Calagna · Samantha Miranda · Rania Jazzan
