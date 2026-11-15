@@ -53,8 +53,13 @@ def test_mandatory_1_easiest_carbonate_01(client):
     j = r.json()
     assert j["oxygen_verified"] is False
     x = j["routes"][0]
-    assert (x["distance_m"], x["time_min"], x["relative_effort"], x["max_slope_deg"], x["max_terrain_slope_deg"]) == \
-        (1162.7, 29.3, 0.77, 27.1, 33.9)
+    # Pins the cost model, so any change to it has to be deliberate and show up here.
+    # Steeper walking grade than the 8-connected, side-slope-free model used to give
+    # (27.1 deg), on gentler ground (31.0 against 33.9), because avoiding side slope
+    # means climbing nearer the fall line, where the cross-slope is zero.
+    assert (x["distance_m"], x["time_min"], x["relative_effort"],
+            x["max_slope_deg"], x["max_terrain_slope_deg"], x["max_side_slope_deg"]) == \
+        (1091.5, 29.7, 0.811, 30.9, 31.0, 6.7)
     same(x, ROUTES["route_carbonate_01_easiest"])
 
 
