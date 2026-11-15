@@ -6,6 +6,18 @@ import sys
 import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
+# The API tests need FastAPI (api/requirements-api.txt) and the real grid, which the
+# engine tests do not. Skip rather than error, so `pytest -q tests` still runs the
+# engine tests on a clone that has neither.
+pytest.importorskip("fastapi", reason="install api/requirements-api.txt to run the API tests")
+
+_GRID = os.environ.get("MARSWALK_GRID",
+                       os.path.join(os.path.dirname(__file__), "..", "data", "processed", "grid5m"))
+if not os.path.exists(os.path.join(_GRID, "grid.json")):
+    pytest.skip(f"no grid at {_GRID}: build it (README step 2) or set MARSWALK_GRID",
+                allow_module_level=True)
+
 from fastapi.testclient import TestClient  # noqa: E402
 
 from api.main import app  # noqa: E402

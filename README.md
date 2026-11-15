@@ -310,13 +310,17 @@ pip install -r api/requirements-api.txt    # only for the API and its tests (ste
    python3 -m routing.export_grid --base-lat 18.452739 --base-lon 77.405768 \
        --half 1400 --cell 10 --out outputs/terrain_grid_10m.json
    ```
-   The file is about 20 MB, which is why it is not committed. Steps 3 and 4 together produce every
-   file the front end reads.
-5. **Tests:** `python3 -m pytest -q tests` — 52 tests (14 engine, 38 API). The 14 engine tests run on
-   synthetic terrain and need nothing from steps 1 to 4: `python3 -m pytest -q tests/test_planner.py`
-   passes on a fresh clone. The 38 API tests need the grid from step 2, because the API loads the real
-   terrain at startup, and the exported files from step 3. If your grid is not at
-   `data/processed/grid5m`, point to it first: `export MARSWALK_GRID=/path/to/grid5m`.
+   The file is committed (2.3 MB), so steps 3 and 4 only rebuild what is already here. Together
+   they produce every file the front end reads.
+5. **Tests:** `python3 -m pytest -q tests` — 52 tests (14 engine, 38 API). The 14 engine tests run
+   on synthetic terrain and need nothing from steps 1 to 4, so they pass on a fresh clone with only
+   `requirements.txt` installed; the 38 API tests are skipped, with the reason printed, until
+   `api/requirements-api.txt` is installed. Those 38 also need the grid from step 2, because the API
+   loads the real terrain at startup. If your grid is not at `data/processed/grid5m`, point to it
+   first: `export MARSWALK_GRID=/path/to/grid5m`.
+
+All of the above was run end to end from a clean clone on 15 November 2026: `pip install`, both
+exports with the commands exactly as written, and 52 tests passing.
 
 ## NASA data and resources
 
