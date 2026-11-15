@@ -58,6 +58,62 @@ We compared our routes with NASA's `M20_traverse.json` (Perseverance's actual dr
 
 The rover chooses its path for science and wheel safety, not for human effort, so this checks that we use the same corridors, not that our routes are "correct". Full table: [`docs/validation/route_vs_rover.csv`](docs/validation/route_vs_rover.csv).
 
+## Why this scales
+
+Nothing in the engine knows it is looking at Jezero. It reads a raster, builds a
+graph of cells, and runs Dijkstra. Every property below was checked against the
+code in this repository, not assumed.
+
+**More resolution is a flag, not a rewrite.** Cell size is `build_grid.py --res`.
+We ran 5 m; the default is 10 m and the source DTM is 1 m. The same command
+builds any of them, and nothing downstream is told which one it got: the planner
+reads the cell size out of `grid.json`.
+
+**More area costs close to linear time.** The grid we build already spans
+4,280 x 4,297 cells, 21.4 x 21.5 km, about 18.4 million cells of the whole
+crater. The routing window used for the submitted routes is a crop of that, not
+the engine's ceiling. Dijkstra over an 8-connected grid has about eight edges
+per cell, so the work grows with the number of cells rather than exploding with
+the size of the map, and scipy's implementation returns the exact optimum, never
+an approximation that degrades as the map grows.
+
+**Another site is another file.** `build_grid.py` reads the projection, the
+origin and the pixel size out of the DTM itself; nothing about the coordinate
+system is written into the code. Point it at a DTM of Gale, of the lunar south
+pole, of anywhere with elevation data, give it a base latitude and longitude,
+and the same pipeline produces the same outputs. Layers that are missing simply
+drop out of the cost model instead of breaking it.
+
+**Better numbers are a config edit.** `routing/config.py` carries 10 constants
+marked SOURCED and 10 marked ASSUMPTION, each with its reference or its reason.
+When a real Mars EVA duration, a measured walking speed or a true suit
+consumption rate is published, it replaces one labelled line. No equation in the
+planner changes, and the tests immediately show what moved.
+
+**More data makes the answers better, not just bigger.** The route alternatives
+come from blending the cost weights and keeping the non-dominated results, so
+every new layer adds a dimension the astronaut can trade against the others.
+Today the blend runs over time, effort, terrain and shelter proximity. Add dust
+opacity, surface temperature at the hour of the walk, or a measured soil
+bearing-strength map, and the same Pareto step yields richer alternatives
+without a line of new search code. The validation improves the same way: every
+additional sol of rover traverse is more ground truth to check the routes
+against.
+
+**Any point, not six.** The saved files hold 28 precomputed routes because the
+front end reads files. The API in `api/` computes a route to an arbitrary
+coordinate on demand, and it is already tested that way. That is a deployment
+step, not new mathematics.
+
+**Where it does not scale yet, and the fix.** Multi-stop ordering is an
+exhaustive search over subsets and permutations (`itertools.permutations` in
+`routing/planner.py`). It is exact and it is fine for the 6 stops here, but it
+is factorial: somewhere past roughly ten stops it becomes the bottleneck, long
+before the terrain grid does. The replacement is standard -- dynamic programming
+over subsets, which is exponential in stops instead of factorial and handles
+tens of stops comfortably. Everything else in the pipeline is already
+independent of how many stops there are.
+
 ## What we do not know (and say so)
 
 - Minerals are **probable** orbital detections (CRISM), not confirmed samples.
