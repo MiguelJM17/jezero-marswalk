@@ -247,4 +247,4 @@ pip install -r requirements.txt
 
 ## Team
 
-Euler's Disappointments — Miguel Jazzan · Ronald Aguirre · Marilennis Naranjo · Valeria Calagna · Samantha Miranda 
+Euler's Disappointments — Miguel Jazzan · Ronald Aguirre · Marilennis Naranjo · Valeria Calagna · Samantha Miranda · Rania Jazzan
