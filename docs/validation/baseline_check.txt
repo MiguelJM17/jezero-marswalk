@@ -1,11 +1,11 @@
 stop           |             straight line              |           our fastest route           
                |  % <100m   len mmax deg  m>20     side |  % <100m   len mmax deg  m>20     side
-clay_01        |   100.0%     225    3.0     0     2.4d |   100.0%     244    3.0     0     2.4d
-clay_02        |    83.7%     249    3.9     0     2.1d |    85.2%     270    3.5     0     3.2d
-carbonate_01   |    91.5%     533   31.0    45    24.4d |    83.3%     603   34.4    65    32.4d
-carbonate_02   |    91.2%     571   40.1    55    16.4d |    87.7%     611   39.5   100    35.1d
-olivine_01     |    68.2%     540   10.7     0     9.0d |    63.4%     563   10.2     0     7.9d
-olivine_02     |    64.9%     573   11.5     0     9.9d |    63.4%     617   10.0     0     8.1d
+clay_01        |   100.0%     225    3.0     0     2.4d |   100.0%     225    3.0     0     2.4d
+clay_02        |    83.7%     249    3.9     0     2.1d |    84.0%     250    3.9     0     2.5d
+carbonate_01   |    91.5%     533   31.0    45    24.4d |    83.6%     581   34.4    60    33.9d
+carbonate_02   |    91.2%     571   40.1    55    16.4d |    90.4%     575   33.7    55    32.7d
+olivine_01     |    68.2%     540   10.7     0     9.0d |    67.3%     525   10.2     0     7.9d
+olivine_02     |    64.9%     573   11.5     0     9.9d |    56.4%     669   10.7     0     9.0d
 
-mean within 100 m of the traverse: straight line 83.3%, our routes 80.5%
+mean within 100 m of the traverse: straight line 83.3%, our routes 80.3%
 Perseverance's own path inside this window: max ground slope 21.0 deg, 10 m above 20 deg, max side slope 17.7 deg, 0 m of side slope above 20 deg

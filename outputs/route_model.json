@@ -17,7 +17,7 @@
  "side_slope": {
   "equation": "tan(side)^2 = tan(terrain slope)^2 - tan(walking grade)^2",
   "measured": "reported on every route and segment as max_side_slope_deg and m_side_slope_steeper_than_20deg",
-  "priced": "SIDE_SLOPE_WEIGHT = 0.0 (ASSUMPTION). 0 measures without pricing. Neither Tobler nor Pandolf models side slope: both were measured walking straight up or down, and no measurement exists for a suited astronaut traversing a Martian hillside",
+  "priced": "SIDE_SLOPE_WEIGHT = 0.5 (ASSUMPTION). 0 measures without pricing. Neither Tobler nor Pandolf models side slope: both were measured walking straight up or down, and no measurement exists for a suited astronaut traversing a Martian hillside",
   "status": "measurement is geometry and carries no assumption; the weight is ours and the README reports what values of it would change"
  },
  "standing": {

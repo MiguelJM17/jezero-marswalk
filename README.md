@@ -27,55 +27,59 @@ Jezero Marswalk plans walks for an astronaut on foot in Jezero crater, Mars. It 
 | Terrain model | 5 m grid built from the 1 m HiRISE DTM, THEMIS thermal inertia and the CRISM mineral map |
 | Missions used | Four: MRO (HiRISE, CRISM), Mars Odyssey (THEMIS), Mars 2020 (traverse, Mastcam-Z, Navcam, MEDA) and MSL (Curiosity RAD) — eight data products |
 | Science stops | 6 probable mineral sites (2 olivine, 2 carbonate, 2 clay/kaolinite), all within 574 m of the habitat and near Perseverance's real path |
-| Routes | 28 precomputed routes: fastest, easiest and Pareto alternatives to every stop (always round trip), 5 time-budget tours, 6 routes that pass by a shelter |
+| Routes | 30 precomputed routes: fastest, easiest and Pareto alternatives to every stop (always round trip), 5 time-budget tours, 6 routes that pass by a shelter |
 | Safety | No point of any route is more than **7.5 min** from the habitat or a terrain shelter, and no more than **12.5 min** from the habitat alone |
-| Full tour | All 6 stops: **2.74 km, 3 h 57 min** (57 min walking + 6 × 30 min of science), within the 6 h recommended EVA |
+| Full tour | All 6 stops: **2.71 km, 3 h 58 min** (58 min walking + 6 × 30 min of science), within the 6 h recommended EVA. 3.13 h of suit supply, 39% of an 8 h suit |
 
-| Destination (round trip) | Distance | Total time (incl. 30 min science) | Steepest walking grade | Steepest ground under the route |
-|---|---|---|---|---|
-| Clay stops | 489–540 m | 38–39 min | 2.0–2.8° | 2.6–3.5° |
-| Olivine stops | 1127–1257 m | 50–52 min | 7.2–8.6° | 10.0–12.1° |
-| Carbonate stops | 1163–1242 m | 58–60 min | 21.8–28.0° | 33.4–39.5° |
+| Destination (round trip) | Distance | Total time (incl. 30 min science) | Steepest walking grade | Steepest ground | Steepest side slope |
+|---|---|---|---|---|---|
+| Clay stops | 450–508 m | 38 min | 1.6–1.9° | 1.9–3.9° | 1.6–2.6° |
+| Olivine stops | 1111–1186 m | 49–52 min | 7.2–11.6° | 9.4–11.1° | 4.9–8.5° |
+| Carbonate stops | 1092–1247 m | 58–61 min | 21.8–32.9° | 31.0–34.4° | 6.7–33.3° |
 
 The carbonates sit on top of an escarpment: their routes cross 34–40° ground diagonally, so the
 walking grade stays at 28° or less. That diagonal has a side slope, and **neither Tobler nor
 Pandolf models side slope**, which is where falls happen: both were measured walking straight up
 or down. Both equations are also being applied well outside the grades they were measured on.
 
-So we measure it. A step across a hillside splits the terrain's steepest slope into the grade
-along the direction of travel and the side slope across it,
+So we measure it, and then we price it. A step across a hillside splits the terrain's steepest
+slope into the grade along the direction of travel and the side slope across it,
 `tan(terrain)² = tan(grade)² + tan(side)²`, which follows from data already on the grid. Every
-route and segment reports `max_side_slope_deg` and `m_side_slope_steeper_than_20deg`. The
-carbonate routes reach **27.8°** of side slope, with 26 m above the 20° reference.
+route and segment reports `max_side_slope_deg` and `m_side_slope_steeper_than_20deg`.
 
-`SIDE_SLOPE_WEIGHT` in `routing/config.py` can also price it, by adding a fraction of the side
-slope to the grade Pandolf sees. It ships at **0**, which measures without pricing, because no
-measurement exists for a suited astronaut traversing a Martian hillside and the weight would be
-ours. What the weight would change is measured rather than guessed:
+`SIDE_SLOPE_WEIGHT` (0.5) adds half the side slope to the grade Pandolf sees. The weight is an
+ASSUMPTION, so what it changes was measured rather than argued:
 
-| `SIDE_SLOPE_WEIGHT` | Tour distance | Worst side slope | Metres above 20° side slope, all 28 routes | Metres above 20° ground |
-|---|---|---|---|---|
-| **0 (shipped)** | 2740 m | 27.8° | 570 | 1553 |
-| 0.25 | 2739 m | 15.4° | 215 | 1036 |
-| 0.5 | 2765 m | 12.6° | 210 | 999 |
-| 1.0 | 2820 m | 10.4° | 205 | 972 |
+| `SIDE_SLOPE_WEIGHT` | Tour distance | Worst side slope on the tour | Metres above 20° side slope, all routes |
+|---|---|---|---|
+| 0 | 2740 m | 27.8° | 570 |
+| 0.25 | 2739 m | 15.4° | 215 |
+| **0.5 (shipped)** | **2706 m** | **11.0°** | **171** |
+| 1.0 | 2820 m | 10.4° | 205 |
 
-The useful part is not the number we would pick. It is that **the benefit arrives at 0.25 and then
-flattens**: any penalty at all removes about 62% of the side-slope exposure, the first quarter of
-it costs no distance at all (2740 m against 2739 m), and raising the weight to 1.0 buys 10 more
-metres for 3% more walking. The conclusion does not depend on the coefficient, which is the usual
-objection to assuming one. The validation section below gives the empirical anchor the weight
-otherwise lacks: Perseverance crossed this same ground without once exceeding 20° of side slope,
-and a weight of 0.5 brings our routes inside that envelope. Anything above 20° is reported as a **warning** (team decision), never
+The benefit arrives at 0.25 and then flattens, so the conclusion does not depend on the
+coefficient, which is the usual objection to assuming one. Two things anchor it further. The
+validation section below reports that **Perseverance crossed this same ground without once
+exceeding 20° of side slope**, and 0.5 brings our routes inside that envelope. And the 16-heading
+graph (below) more than repays the detour the penalty would otherwise cost: the tour is **34 m
+shorter** than it was with no penalty at all.
+
+One limit, stated plainly: the penalty lives in the **effort** weight, because Pandolf is where a
+grade term exists. Tobler has none, so the *fastest* route still accepts side slope and only
+reports it. The least-effort route, which we mark `preferred`, drops from 27.8° to 6.7° on
+carbonate 1; the fastest route to the same stop still crosses 33.9° and says so on its card.
+Putting side slope into the speed model is the next change, not a finished one.
+
+Anything above 20° is reported as a **warning** (team decision), never
 silently hidden.
 
 ## Method
 
 1. **Common grid.** All layers are resampled to the same 5 m grid in the DTM's equirectangular projection (Mars 2000 sphere, R = 3,396,190 m). Ground east distance is corrected by cos(latitude) (×0.948 at Jezero). Roughness is the standard deviation of the 1 m slope inside each 5 m cell, which keeps rough ground from being flattened by averaging. A HiRISE DTM resolves detail coarser than its 1 m posting, so boulders of a metre or two are still invisible to it.
-2. **Graph.** Each cell is a node connected to its 8 neighbours. Edges are directed, because uphill costs more than downhill. Forbidden cells (no edge) are cells without elevation, thermal inertia below 100 (possibly not load-bearing; none in this area) and a DTM artefact strip west of lon 77.35° E (our assumption; far from the area).
+2. **Graph.** Each cell is a node connected to its 8 neighbours plus the 8 knight moves, so a route can be built from 16 headings instead of 8. Edges are directed, because uphill costs more than downhill. A knight move spans two cells and is priced from its ends, so it is only an edge where the cells it passes over are walkable and sit within 0.5 m of the straight line between them: otherwise it would fly over a one-cell ridge for free. Forbidden cells (no edge) are cells without elevation, thermal inertia below 100 (possibly not load-bearing; none in this area) and a DTM artefact strip west of lon 77.35° E (our assumption; far from the area).
 3. **Time.** Tobler's hiking function, scaled so that flat ground gives 3.6 km/h, the Apollo planners' walk-back speed.
 4. **Effort.** Pandolf's metabolic equation (no load), with a terrain factor from roughness and soft soil (thermal inertia). Downhill is counted as flat grade **in the effort weight only**: `DOWNHILL_MIN_REL` switches that clamp on, but it is not a floor on the rate, and the metabolic rate can still fall below flat on a descent, to 0.62 at a 30% grade, because the speed term shrinks. The effort of a step never falls below that of a flat step of the same horizontal length, which we checked by sweeping the grades, but that holds because Tobler lengthens the time enough to compensate, not because of the clamp. The time weight is Tobler's curve unmodified, which is fastest on a gentle descent, as walking actually is. Effort is expressed in **hours of suit supply at 1200 BTU/h**: a model estimate, **not verified for Mars**.
-5. **Search.** Dijkstra's algorithm (scipy.sparse.csgraph) on about 2.5 million edges. The fastest route minimises time, the easiest minimises effort, and sweeping a blend of the two weights gives non-dominated alternatives. Sweeping a linear blend only reaches the convex hull of the trade-off curve, so these are non-dominated routes found by that sweep, not the complete Pareto front. Multi-stop order is an exhaustive search. Emergency mode is one Dijkstra from the astronaut's position, filtered by the usable suit supply (25% reserve, team assumption).
+5. **Search.** Dijkstra's algorithm (scipy.sparse.csgraph) on about 5.0 million edges. The fastest route minimises time, the easiest minimises effort, and sweeping a blend of the two weights gives non-dominated alternatives. Sweeping a linear blend only reaches the convex hull of the trade-off curve, so these are non-dominated routes found by that sweep, not the complete Pareto front. Multi-stop order is an exhaustive search. Emergency mode is one Dijkstra from the astronaut's position, filtered by the usable suit supply (25% reserve, team assumption).
 6. **Shelters and comms.** Shelters are walkable cells (≤ 20°) where the terrain hides the most sky, using horizon angles over 500 m in 16 directions: a geometric proxy, not a life-support shelter. A communication point is a walkable cell with a straight line of sight to a 3 m antenna at the habitat, with the suit antenna at 1.8 m (assumed heights).
 
 All constants live in [`routing/config.py`](routing/config.py), each labelled **SOURCED** (with its reference) or **ASSUMPTION**.
@@ -113,12 +117,11 @@ walking grade for a longer diagonal across the escarpment. It is also the cleare
 calibration loop described below, because no measurement exists to say which of those two trades a suited
 astronaut should prefer.
 
-Part of the extra length is not the cost model at all. An 8-connected grid can only travel in multiples
-of 45°, so reaching a point on an intermediate bearing requires a staircase, which adds up to 8.2% in the
-worst case (a bearing 22.5° off the axis). The clay routes show it: they cross nearly flat ground and
-still come out about 4% longer than the straight line. Separating grid quantisation from genuine terrain
-avoidance needs a 16-connected grid or path smoothing. Until then, the 4–13% figure is an **upper bound**
-on how much of the detour the cost model is responsible for.
+Part of that extra length was never the cost model. An 8-connected grid can only travel in multiples of
+45°, so reaching a point on an intermediate bearing takes a staircase up to 8.2% longer than the straight
+line. The clay routes made it visible: nearly flat ground, and still 4% long. The graph now carries the 8
+knight moves as well, which brings that worst case to **2.7%**, and the clay routes came down from 489 m
+to 450 m without the cost model changing its mind about anything. What is left of the gap is terrain.
 
 ### What Perseverance itself accepted
 
@@ -154,8 +157,8 @@ reads the cell size out of `grid.json`.
 a cell is 4.74 m east by 5.0 m north on the ground, so the grid covers
 20.3 x 21.5 km, about 18.4 million cells. The routes in
 this submission are computed in a 3 x 3 km window around the habitat, roughly
-310,000 walkable cells and 2.5 million directed edges -- a crop of the grid, not
-the engine's ceiling. Dijkstra over an 8-connected grid has about eight edges
+333,000 walkable cells and 5.0 million directed edges -- a crop of the grid,
+not the engine's ceiling. Dijkstra over this grid has about sixteen edges
 per cell, so the work grows with the number of cells rather than exploding with
 the size of the map, and scipy's implementation returns the exact optimum, never
 an approximation that degrades as the map grows.
@@ -183,7 +186,7 @@ without a line of new search code. The validation improves the same way: every
 additional sol of rover traverse is more ground truth to check the routes
 against.
 
-**Any point, not six.** The saved files hold 28 precomputed routes because the
+**Any point, not six.** The saved files hold 30 precomputed routes because the
 front end reads files. The API in `api/` computes a route to an arbitrary
 coordinate on demand, and it is already tested that way. That is a deployment
 step, not new mathematics.
@@ -245,15 +248,15 @@ Each route carries `radiation_dose_estimate_uGy`, and each shelter a dose rate a
 A FastAPI service wraps the same routing engine. It is **not connected to the live app**: marseva.us reads the saved files in `outputs/`, so it can only show the routes that were computed ahead of time. The API is the piece that would let the app ask for a route to any point; it runs and passes its tests, but it is not deployed. Valeria built the first version; Ronald finished it on the current engine. Every number comes from `routing.export_handoff.Exporter`, so the API and the saved files share one source.
 
 - **Endpoints:** `POST /api/routes/fastest`, `/easiest`, `/pareto`, `/mineral-target`, `/time-budget`, `/via-shelter`; `POST /api/emergency/reachable`; `GET /api/health`, `/api/scientific-destinations`, `/api/terrain/layers`, `/api/terrain/point`. A position can be a waypoint id, east/north metres from the habitat, or lat/lon. Docs at `/docs`.
-- **Tests:** 52 pass (14 engine tests + 38 API tests), on Python 3.13 and 3.10 (the Dockerfile version). All 28 saved routes and all 4 emergency scenarios come out identical, field by field, from the live API; a test fails if any saved route is left unchecked.
+- **Tests:** 56 pass (16 engine tests + 40 API tests), on Python 3.13 and 3.10 (the Dockerfile version). All 30 saved routes and all 4 emergency scenarios come out identical, field by field, from the live API; a test fails if any saved route is left unchecked.
 - **Coverage:** the exported map window, about ±1.37 km from the habitat. Unknown or out-of-bounds positions return an error (422), never an estimate.
-- **Performance:** about 10 s to start, about 0.3 s per route, about 360 MB of memory.
+- **Performance:** about 10 s to start, about 0.3 s per route, about 470 MB of memory.
 - **Deploy:** `REGION=<region> bash tools/deploy_cloud_run.sh` deploys to Cloud Run and runs `tools/check_live_api.py` (44 live checks) against the new URL.
 - **Not done yet:** Cloud Run deployment and connection to the Base44 app. Until then the app uses the precomputed files in `outputs/`, which stay as the fallback.
 
 ## Use of AI tools
 
-The project idea, challenge choice, site, stops and every design decision (cost model, slope warnings instead of bans, what counts as a shelter or a comms point) are the team's. We used an AI assistant (Anthropic's Claude) to help write and debug the Python processing and routing code in this repository, to process and check the data files, to draft documentation, and to edit the text of this submission. The routing API (`api/`, `tests/test_api.py`, `tools/`) was written by Ronald with the help of Claude (Anthropic); he directed the work and ran the checks, and the 52 tests compare every answer with the engine-generated files. Valeria's earlier adapter was built with help from OpenAI Codex. The front end at marseva.us was built on Base44, which is itself an AI app builder: we specified the behaviour and the data it reads, and it generated the interface code. Every number in the outputs comes from running this code on the NASA data listed below. Rover photos, positions and the validation were selected and checked by the team.
+The project idea, challenge choice, site, stops and every design decision (cost model, slope warnings instead of bans, what counts as a shelter or a comms point) are the team's. We used an AI assistant (Anthropic's Claude) to help write and debug the Python processing and routing code in this repository, to process and check the data files, to draft documentation, and to edit the text of this submission. The routing API (`api/`, `tests/test_api.py`, `tools/`) was written by Ronald with the help of Claude (Anthropic); he directed the work and ran the checks, and the 56 tests compare every answer with the engine-generated files. Valeria's earlier adapter was built with help from OpenAI Codex. The front end at marseva.us was built on Base44, which is itself an AI app builder: we specified the behaviour and the data it reads, and it generated the interface code. Every number in the outputs comes from running this code on the NASA data listed below. Rover photos, positions and the validation were selected and checked by the team.
 
 ## What is in this repository
 
@@ -283,7 +286,7 @@ NASA rasters  →  build_grid.py →  terrain.py → planner.py  →  JSON + map
 | `curated/` | The inputs the team compiled by hand: the 6 science stops, Perseverance positions, the photo table and the MEDA file index. Its `README.md` is the key to the Spanish column names |
 | `outputs/` | **The output.** Nine JSON files and eight map layers, generated by `routing/export_handoff.py`. Nothing here is typed by hand. Opens with its own `README.md` |
 | `api/` | The routing API (FastAPI) that serves the same objects live, plus its contract, its deployment notes and `openapi.json` |
-| `tests/` | 14 engine tests on synthetic terrain, 38 API tests against the saved outputs |
+| `tests/` | 16 engine tests on synthetic terrain, 40 API tests against the saved outputs |
 | `docs/` | Validation figure and tables, photo and MEDA notes, and the prompt used to build the front end |
 | `tools/` | Deployment script and the 44 live checks run against a deployed API |
 | `scripts/` | `download_rad.sh`, which fetches the Curiosity RAD files from CDAWeb |
@@ -319,7 +322,7 @@ pip install -r api/requirements-api.txt    # only for the API and its tests (ste
    - Curiosity RAD: `bash scripts/download_rad.sh`
    - MEDA PS files: see `curated/meda_files.csv`, then `python3 processing/meda_summary.py meda/*.CSV > data/meda_pressure_summary.json`
 2. **Build the grid:** `python3 processing/build_grid.py --res 5 --strip 100`
-3. **Export everything the app needs (about 10–20 s, about 360 MB RAM).** If you built the grid somewhere other than `data/processed/grid5m`, add `--grid <folder>`. The RAD files must be in `data/rad` (step 1); without them the export still runs but has no radiation fields. Rover positions come from `curated/rover_waypoints_minerals.csv`.
+3. **Export everything the app needs (about 12–25 s, about 470 MB RAM).** If you built the grid somewhere other than `data/processed/grid5m`, add `--grid <folder>`. The RAD files must be in `data/rad` (step 1); without them the export still runs but has no radiation fields. Rover positions come from `curated/rover_waypoints_minerals.csv`.
    ```bash
    python3 -m routing.export_handoff --stops curated/proposed_stops.csv --photos curated/photo_table.csv \
        --option A --base-lat 18.452739 --base-lon 77.405768 --out outputs
@@ -332,7 +335,7 @@ pip install -r api/requirements-api.txt    # only for the API and its tests (ste
    ```
    The file is committed (2.3 MB), so steps 3 and 4 only rebuild what is already here. Together
    they produce every file the front end reads.
-5. **Tests:** `python3 -m pytest -q tests` — 52 tests (14 engine, 38 API). The 14 engine tests run
+5. **Tests:** `python3 -m pytest -q tests` — 56 tests (16 engine, 40 API). The 16 engine tests run
    on synthetic terrain and need nothing from steps 1 to 4, so they pass on a fresh clone with only
    `requirements.txt` installed; the 38 API tests are skipped, with the reason printed, until
    `api/requirements-api.txt` is installed. Those 38 also need the grid from step 2, because the API
@@ -340,7 +343,7 @@ pip install -r api/requirements-api.txt    # only for the API and its tests (ste
    first: `export MARSWALK_GRID=/path/to/grid5m`.
 
 All of the above was run end to end from a clean clone on 15 November 2026: `pip install`, both
-exports with the commands exactly as written, and 52 tests passing.
+exports with the commands exactly as written, and 56 tests passing.
 
 ## NASA data and resources
 

@@ -2,11 +2,11 @@
 
 A FastAPI service that wraps the routing engine in `routing/` and answers with the
 same JSON objects as the saved files in `outputs/`. It exists so the front end can
-ask for a route to **any** point, instead of only the 28 routes computed ahead of
+ask for a route to **any** point, instead of only the 30 routes computed ahead of
 time.
 
-**Status: built and tested locally, not deployed.** 52 tests pass (14 engine, 38
-API), on Python 3.13 and on the Dockerfile's 3.10. All 28 saved routes and all 4
+**Status: built and tested locally, not deployed.** 56 tests pass (16 engine, 40
+API), on Python 3.13 and on the Dockerfile's 3.10. All 30 saved routes and all 4
 emergency scenarios come out identical, field by field, from the live service.
 
 ## Run it
@@ -18,7 +18,7 @@ uvicorn api.main:app --reload
 ```
 
 Interactive docs at `/docs`. About 10 s to start, about 0.3 s per route, about
-360 MB of memory.
+470 MB of memory.
 
 ## Endpoints
 
