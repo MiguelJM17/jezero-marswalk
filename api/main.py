@@ -42,7 +42,7 @@ app = FastAPI(title="Jezero Marswalk routing API", version="1.0",
                           "oxygen_verified is always false.",
               lifespan=lifespan)
 
-ORIGINS = [o.strip() for o in os.environ.get("CORS_ORIGINS", "https://jolly-mars-path-pilot.base44.app").split(",")
+ORIGINS = [o.strip() for o in os.environ.get("CORS_ORIGINS", "https://marseva.us,https://www.marseva.us,https://jolly-mars-path-pilot.base44.app").split(",")
            if o.strip()]
 app.add_middleware(CORSMiddleware, allow_origins=ORIGINS, allow_methods=["GET", "POST", "OPTIONS"],
                    allow_headers=["*"])

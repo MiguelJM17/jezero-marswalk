@@ -6,7 +6,7 @@ The **endpoint names are the ones the Base44 app already uses** (app page `/data
 
 ## General rules
 - Base URL: `https://<server>/` (set in the app's Settings). Everything is JSON, UTF-8.
-- CORS: allow `https://jolly-mars-path-pilot.base44.app`.
+- CORS: allows `https://marseva.us`, `https://www.marseva.us` and the app build origin by default; override with CORS_ORIGINS.
 - Coordinates: `east_m` / `north_m` from the habitat (habitat_01 = 0,0), the same frame as `outputs`. Every point also returns `lat`, `lon` and `elevation_m`.
 - A **position** in a request can be any one of:
   - `{"waypoint_id": "carbonate_01"}`

@@ -30,7 +30,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("url")
     ap.add_argument("--token", default=None, help="identity token for a private Cloud Run service")
-    ap.add_argument("--origins", default="https://jolly-mars-path-pilot.base44.app",
+    ap.add_argument("--origins", default="https://marseva.us,https://jolly-mars-path-pilot.base44.app",
                     help="comma-separated app origins that must pass CORS")
     A = ap.parse_args()
     base = A.url.rstrip("/")

@@ -223,7 +223,7 @@ The `*.run.app` URL works right away. For the demo, give the app that URL; the c
 **About the deployment settings:**
 - The `Dockerfile` uses `python:3.10-slim` with the pinned packages from `requirements.txt` and `api/requirements-api.txt`. I tested it with Python 3.10 and the same pins.
 - I could not build the Docker image here because there is no Docker daemon.
-- CORS allows `https://jolly-mars-path-pilot.base44.app` by default. Other origins go in `CORS_ORIGINS`, as shown above.
+- CORS allows `https://marseva.us`, `https://www.marseva.us` and the app build origin by default. Other origins go in `CORS_ORIGINS`, as shown above.
 - The first request after the service has been idle takes about 10 s, because min instances is 0. For the live demo, open `/api/health` a minute before.
 - Never put Google credentials or ADC files in the team chat or in Base44.
 
