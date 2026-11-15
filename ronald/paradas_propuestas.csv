@@ -1,0 +1,15 @@
+opcion,grupo,mineral_clase,mineral,lat,lon,celdas_alta_conf_3x3,tamano_parche_celdas,dist_al_habitat_m,foto_sol_desde,foto_sol_hasta,foto_rmc_site_drive,dist_foto_a_parada_m,fotos_mastcamz_site_drive,fotos_navcam_site_drive
+A,olivine,1,Olivine (olivino),18.443671,77.404545,9/9,637,561,416,418,23_1180,275,314,118
+A,olivine,1,Olivine (olivino),18.443839,77.401846,7/9,637,564,419,420,23_2532,294,316,78
+A,carbonate,2,Mg-Carbonate (carbonato),18.461216,77.409100,8/9,17,558,707,708,33_612,157,896,73
+A,carbonate,2,Mg-Carbonate (carbonato),18.462397,77.406401,8/9,37,566,708,709,33_1756,141,194,56
+A,clay,9,Kaolinite (arcilla),18.454468,77.409269,9/9,53,305,434,436,24_3290,48,168,149
+A,clay,9,Kaolinite (arcilla),18.450925,77.409775,9/9,15,348,674,678,32_774,134,906,166
+A,habitat,,,18.453118,77.404039,,,,,,,,,
+B,olivine,1,Olivine (olivino),18.446370,77.447734,9/9,4290,1252,15,16,3_386,199,28,183
+B,olivine,1,Olivine (olivino),18.448563,77.449084,9/9,4290,1268,379,381,11_1110,193,24,71
+B,carbonate,2,Mg-Carbonate (carbonato),18.461216,77.409438,8/9,17,1086,707,708,33_612,162,896,73
+B,carbonate,2,Mg-Carbonate (carbonato),18.462397,77.406401,8/9,37,1269,708,709,33_1756,141,194,56
+B,clay,9,Kaolinite (arcilla),18.458179,77.431876,8/9,41,249,402,404,20_0,179,20,68
+B,clay,9,Kaolinite (arcilla),18.459360,77.423440,8/9,18,319,404,405,20_1422,130,8,50
+B,habitat,,,18.456155,77.427995,,,,,,,,,

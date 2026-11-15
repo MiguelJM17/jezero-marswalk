@@ -1,0 +1,64 @@
+{
+ "site": "Jezero Crater, Mars",
+ "habitat": {
+  "id": "habitat_01",
+  "name": "Habitat A",
+  "east_m": 0.0,
+  "north_m": 0.0,
+  "lat": 18.452739,
+  "lon": 77.405768,
+  "x_m": 4588203.5,
+  "y_m": 1093780.5,
+  "elevation_m": -2543.7,
+  "source": "Team option A (Ronald), moved 100 m east to flat ground (1.4 deg slope)"
+ },
+ "study_area": {
+  "east_m": [
+   -1377.8,
+   1377.8
+  ],
+  "north_m": [
+   -1377.5,
+   1377.5
+  ],
+  "lat_range": [
+   18.429542,
+   18.475936
+  ],
+  "lon_range": [
+   77.381306,
+   77.430231
+  ]
+ },
+ "grid": {
+  "cell_size_m": 5.0,
+  "ground_cell_east_m": 4.743,
+  "ground_cell_north_m": 5.0,
+  "rows": 551,
+  "cols": 581
+ },
+ "eva_limits": {
+  "recommended_h": 6.0,
+  "maximum_h": 8.0,
+  "planning_radius_m": 2000.0,
+  "label": "Planning assumptions from NASA Artemis references, not Mars-certified limits"
+ },
+ "slope_reference_deg": 20.0,
+ "slope_policy": "No terrain is forbidden for slope. Steep ground costs more and is avoided by the planner; route length steeper than 20 deg is reported as a warning (team decision).",
+ "masked": [
+  "cells without DTM elevation",
+  "thermal inertia < 100 (none in this area)",
+  "west of lon 77.35 E (DTM artefact zone; assumption from our inspection, far from this area)"
+ ],
+ "frame": {
+  "name": "local ENU from habitat",
+  "axes": [
+   "east_m",
+   "north_m"
+  ],
+  "origin": "habitat_01",
+  "units": "metres on the ground",
+  "note": "east_m/north_m are ground metres from the habitat. lat/lon are planetocentric degrees, longitude positive east, Mars 2000 sphere (R = 3,396,190 m). x_m/y_m are coordinates in the DTM's equirectangular projection (standard parallel 0, central meridian 0). This is NOT RFC 7946 (Earth WGS84) GeoJSON."
+ },
+ "crs_wkt": "PROJCS[\"Equirectangular Mars 2000 Sphere IAU\",GEOGCS[\"D_Mars_2000_Sphere\",DATUM[\"Mars_2000_(Sphere)\",SPHEROID[\"Mars_2000_Sphere_IAU\",3396190,0],AUTHORITY[\"ESRI\",\"106971\"]],PRIMEM[\"Reference_Meridian\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Equirectangular\"],PARAMETER[\"standard_parallel_1\",0],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]"
+}

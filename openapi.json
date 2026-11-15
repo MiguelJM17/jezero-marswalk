@@ -1,0 +1,592 @@
+{
+ "openapi": "3.1.0",
+ "info": {
+  "title": "Jezero Marswalk routing API",
+  "description": "Routes for astronauts walking in Jezero crater, Mars. Same JSON as base44_handoff/. relative_effort is in hours of suit supply at 1200 BTU/h (model, not verified); oxygen_verified is always false.",
+  "version": "1.0"
+ },
+ "paths": {
+  "/api/health": {
+   "get": {
+    "summary": "Health",
+    "operationId": "health_api_health_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/routes/fastest": {
+   "post": {
+    "summary": "Fastest",
+    "operationId": "fastest_api_routes_fastest_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RouteReq"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/routes/easiest": {
+   "post": {
+    "summary": "Easiest",
+    "operationId": "easiest_api_routes_easiest_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RouteReq"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/routes/pareto": {
+   "post": {
+    "summary": "Pareto",
+    "operationId": "pareto_api_routes_pareto_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RouteReq"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/routes/via-shelter": {
+   "post": {
+    "summary": "Via Shelter",
+    "description": "Extra (not in API_CONTRACT.md v1): round trip that passes by the best terrain shelter,\nlike the via_shelter routes in routes.json. Always a round trip.",
+    "operationId": "via_shelter_api_routes_via_shelter_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RouteReq"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/routes/mineral-target": {
+   "post": {
+    "summary": "Mineral Target",
+    "operationId": "mineral_target_api_routes_mineral_target_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/MineralReq"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/routes/time-budget": {
+   "post": {
+    "summary": "Time Budget",
+    "operationId": "time_budget_api_routes_time_budget_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/BudgetReq"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/emergency/reachable": {
+   "post": {
+    "summary": "Emergency",
+    "operationId": "emergency_api_emergency_reachable_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/EmergencyReq"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/scientific-destinations": {
+   "get": {
+    "summary": "Destinations",
+    "operationId": "destinations_api_scientific_destinations_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/terrain/layers": {
+   "get": {
+    "summary": "Layers",
+    "operationId": "layers_api_terrain_layers_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/terrain/point": {
+   "get": {
+    "summary": "Terrain Point",
+    "operationId": "terrain_point_api_terrain_point_get",
+    "parameters": [
+     {
+      "name": "east_m",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "number"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "East M"
+      }
+     },
+     {
+      "name": "north_m",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "number"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "North M"
+      }
+     },
+     {
+      "name": "lat",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "number"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Lat"
+      }
+     },
+     {
+      "name": "lon",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "number"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Lon"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "components": {
+  "schemas": {
+   "BudgetReq": {
+    "properties": {
+     "time_budget_min": {
+      "type": "number",
+      "exclusiveMinimum": 0.0,
+      "title": "Time Budget Min"
+     },
+     "from": {
+      "anyOf": [
+       {
+        "additionalProperties": true,
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "From"
+     },
+     "dwell_min": {
+      "type": "number",
+      "minimum": 0.0,
+      "title": "Dwell Min",
+      "default": 30.0
+     },
+     "multi_stop": {
+      "type": "boolean",
+      "title": "Multi Stop",
+      "default": true
+     }
+    },
+    "type": "object",
+    "required": [
+     "time_budget_min"
+    ],
+    "title": "BudgetReq"
+   },
+   "EmergencyReq": {
+    "properties": {
+     "position": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Position"
+     },
+     "suit_supply_left_h": {
+      "type": "number",
+      "minimum": 0.0,
+      "title": "Suit Supply Left H"
+     },
+     "reserve_fraction": {
+      "type": "number",
+      "exclusiveMaximum": 1.0,
+      "minimum": 0.0,
+      "title": "Reserve Fraction",
+      "default": 0.25
+     }
+    },
+    "type": "object",
+    "required": [
+     "position",
+     "suit_supply_left_h"
+    ],
+    "title": "EmergencyReq"
+   },
+   "HTTPValidationError": {
+    "properties": {
+     "detail": {
+      "items": {
+       "$ref": "#/components/schemas/ValidationError"
+      },
+      "type": "array",
+      "title": "Detail"
+     }
+    },
+    "type": "object",
+    "title": "HTTPValidationError"
+   },
+   "MineralReq": {
+    "properties": {
+     "mineral": {
+      "type": "string",
+      "title": "Mineral"
+     },
+     "from": {
+      "anyOf": [
+       {
+        "additionalProperties": true,
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "From"
+     },
+     "dwell_min": {
+      "type": "number",
+      "minimum": 0.0,
+      "title": "Dwell Min",
+      "default": 30.0
+     }
+    },
+    "type": "object",
+    "required": [
+     "mineral"
+    ],
+    "title": "MineralReq"
+   },
+   "RouteReq": {
+    "properties": {
+     "to": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "To"
+     },
+     "from": {
+      "anyOf": [
+       {
+        "additionalProperties": true,
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "From"
+     },
+     "round_trip": {
+      "type": "boolean",
+      "title": "Round Trip",
+      "default": true
+     },
+     "dwell_min": {
+      "type": "number",
+      "minimum": 0.0,
+      "title": "Dwell Min",
+      "default": 30.0
+     }
+    },
+    "type": "object",
+    "required": [
+     "to"
+    ],
+    "title": "RouteReq"
+   },
+   "ValidationError": {
+    "properties": {
+     "loc": {
+      "items": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "integer"
+        }
+       ]
+      },
+      "type": "array",
+      "title": "Location"
+     },
+     "msg": {
+      "type": "string",
+      "title": "Message"
+     },
+     "type": {
+      "type": "string",
+      "title": "Error Type"
+     },
+     "input": {
+      "title": "Input"
+     },
+     "ctx": {
+      "type": "object",
+      "title": "Context"
+     }
+    },
+    "type": "object",
+    "required": [
+     "loc",
+     "msg",
+     "type"
+    ],
+    "title": "ValidationError"
+   }
+  }
+ }
+}

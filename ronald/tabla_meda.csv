@@ -1,0 +1,11 @@
+sol,sensor,archivo,enlace_descarga,tamano
+417,PS,WE__0417___________DER_PS__________________P01.CSV,https://atmos.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0300_0419/sol_0417/WE__0417___________DER_PS__________________P01.CSV,2.1M
+417,PS,WE__0417___________DER_PS__________________P01.xml,https://atmos.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0300_0419/sol_0417/WE__0417___________DER_PS__________________P01.xml,8.9K
+420,PS,WE__0420___________DER_PS__________________P01.CSV,https://atmos.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0420_0539/sol_0420/WE__0420___________DER_PS__________________P01.CSV,3.9M
+420,PS,WE__0420___________DER_PS__________________P01.xml,https://atmos.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0420_0539/sol_0420/WE__0420___________DER_PS__________________P01.xml,8.9K
+435,PS,WE__0435___________DER_PS__________________P01.CSV,https://atmos.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0420_0539/sol_0435/WE__0435___________DER_PS__________________P01.CSV,2.5M
+435,PS,WE__0435___________DER_PS__________________P01.xml,https://atmos.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0420_0539/sol_0435/WE__0435___________DER_PS__________________P01.xml,8.9K
+674,PS,WE__0674___________DER_PS__________________P01.CSV,https://atmos.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0660_0779/sol_0674/WE__0674___________DER_PS__________________P01.CSV,2.4M
+674,PS,WE__0674___________DER_PS__________________P01.xml,https://atmos.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0660_0779/sol_0674/WE__0674___________DER_PS__________________P01.xml,8.9K
+708,PS,WE__0708___________DER_PS__________________P01.CSV,https://atmos.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0660_0779/sol_0708/WE__0708___________DER_PS__________________P01.CSV,2.7M
+708,PS,WE__0708___________DER_PS__________________P01.xml,https://atmos.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0660_0779/sol_0708/WE__0708___________DER_PS__________________P01.xml,8.9K

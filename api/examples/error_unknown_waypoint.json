@@ -1,0 +1,17 @@
+{
+ "request": {
+  "method": "POST",
+  "path": "/api/routes/easiest",
+  "query": null,
+  "body": {
+   "to": {
+    "waypoint_id": "carbonate_99"
+   }
+  }
+ },
+ "status": 404,
+ "response": {
+  "error": "unknown_waypoint",
+  "detail": "to: waypoint_id 'carbonate_99' is not in waypoints.json"
+ }
+}

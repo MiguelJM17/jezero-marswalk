@@ -1,0 +1,31 @@
+{
+ "request": {
+  "method": "GET",
+  "path": "/api/terrain/point",
+  "query": {
+   "east_m": 120,
+   "north_m": -340
+  },
+  "body": null
+ },
+ "status": 200,
+ "response": {
+  "east_m": 118.6,
+  "north_m": -340.0,
+  "lat": 18.447003,
+  "lon": 77.407877,
+  "elevation_m": -2540.7,
+  "slope_deg": 6.0,
+  "roughness_deg": 0.4,
+  "thermal_inertia": 190.5,
+  "mineral": {
+   "class": 4,
+   "name": "Olivine + Smectite",
+   "group": null,
+   "confidence": "high"
+  },
+  "walkable": true,
+  "sky_blocked_pct": 5.0,
+  "line_of_sight_to_habitat": true
+ }
+}

@@ -1,0 +1,490 @@
+{
+ "frame": {
+  "name": "local ENU from habitat",
+  "axes": [
+   "east_m",
+   "north_m"
+  ],
+  "origin": "habitat_01",
+  "units": "metres on the ground",
+  "note": "east_m/north_m are ground metres from the habitat. lat/lon are planetocentric degrees, longitude positive east, Mars 2000 sphere (R = 3,396,190 m). x_m/y_m are coordinates in the DTM's equirectangular projection (standard parallel 0, central meridian 0). This is NOT RFC 7946 (Earth WGS84) GeoJSON."
+ },
+ "note": "Probable detections from orbital CRISM data, not confirmed samples.",
+ "minerals": [
+  {
+   "id": "carbonate_patch_01",
+   "group": "carbonate",
+   "label": "Probable Mg-carbonate",
+   "classes": [
+    2
+   ],
+   "confidence": "high (CRISM map code)",
+   "area_m2": 2775.0,
+   "center": {
+    "east_m": 28.5,
+    "north_m": 600.0,
+    "lat": 18.462861,
+    "lon": 77.406274,
+    "x_m": 4588233.5,
+    "y_m": 1094380.5,
+    "elevation_m": -2471.2
+   },
+   "bbox_east_m": [
+    9.5,
+    42.7
+   ],
+   "bbox_north_m": [
+    565.0,
+    635.0
+   ],
+   "linked_waypoints": [
+    "carbonate_02"
+   ],
+   "source": "CRISM mineral map of Jezero (Parente, Itoh, Saranathan), https://zenodo.org/record/5575824"
+  },
+  {
+   "id": "carbonate_patch_02",
+   "group": "carbonate",
+   "label": "Probable Mg-carbonate",
+   "classes": [
+    2
+   ],
+   "confidence": "high (CRISM map code)",
+   "area_m2": 1447.0,
+   "center": {
+    "east_m": 194.5,
+    "north_m": 510.0,
+    "lat": 18.461343,
+    "lon": 77.409227,
+    "x_m": 4588408.5,
+    "y_m": 1094290.5,
+    "elevation_m": -2473.9
+   },
+   "bbox_east_m": [
+    180.2,
+    213.4
+   ],
+   "bbox_north_m": [
+    490.0,
+    525.0
+   ],
+   "linked_waypoints": [
+    "carbonate_01"
+   ],
+   "source": "CRISM mineral map of Jezero (Parente, Itoh, Saranathan), https://zenodo.org/record/5575824"
+  },
+  {
+   "id": "olivine_patch_03",
+   "group": "olivine",
+   "label": "Probable olivine",
+   "classes": [
+    1
+   ],
+   "confidence": "high (CRISM map code)",
+   "area_m2": 59879.0,
+   "center": {
+    "east_m": -161.3,
+    "north_m": -655.0,
+    "lat": 18.441688,
+    "lon": 77.4029,
+    "x_m": 4588033.5,
+    "y_m": 1093125.5,
+    "elevation_m": -2529.4
+   },
+   "bbox_east_m": [
+    -298.8,
+    -56.9
+   ],
+   "bbox_north_m": [
+    -805.0,
+    -515.0
+   ],
+   "linked_waypoints": [
+    "olivine_01",
+    "olivine_02"
+   ],
+   "source": "CRISM mineral map of Jezero (Parente, Itoh, Saranathan), https://zenodo.org/record/5575824"
+  },
+  {
+   "id": "olivine_patch_04",
+   "group": "olivine",
+   "label": "Probable olivine",
+   "classes": [
+    1
+   ],
+   "confidence": "high (CRISM map code)",
+   "area_m2": 52030.0,
+   "center": {
+    "east_m": -640.3,
+    "north_m": -610.0,
+    "lat": 18.442448,
+    "lon": 77.394381,
+    "x_m": 4587528.5,
+    "y_m": 1093170.5,
+    "elevation_m": -2511.5
+   },
+   "bbox_east_m": [
+    -806.3,
+    -502.8
+   ],
+   "bbox_north_m": [
+    -785.0,
+    -480.0
+   ],
+   "linked_waypoints": [],
+   "source": "CRISM mineral map of Jezero (Parente, Itoh, Saranathan), https://zenodo.org/record/5575824"
+  },
+  {
+   "id": "olivine_patch_05",
+   "group": "olivine",
+   "label": "Probable olivine",
+   "classes": [
+    1
+   ],
+   "confidence": "high (CRISM map code)",
+   "area_m2": 14917.0,
+   "center": {
+    "east_m": -929.6,
+    "north_m": -140.0,
+    "lat": 18.450377,
+    "lon": 77.389235,
+    "x_m": 4587223.5,
+    "y_m": 1093640.5,
+    "elevation_m": -2515.8
+   },
+   "bbox_east_m": [
+    -972.3,
+    -877.4
+   ],
+   "bbox_north_m": [
+    -300.0,
+    -20.0
+   ],
+   "linked_waypoints": [],
+   "source": "CRISM mineral map of Jezero (Parente, Itoh, Saranathan), https://zenodo.org/record/5575824"
+  },
+  {
+   "id": "clay_patch_06",
+   "group": "clay",
+   "label": "Probable clay",
+   "classes": [
+    9
+   ],
+   "confidence": "high (CRISM map code)",
+   "area_m2": 5502.0,
+   "center": {
+    "east_m": 422.1,
+    "north_m": -25.0,
+    "lat": 18.452317,
+    "lon": 77.413276,
+    "x_m": 4588648.5,
+    "y_m": 1093755.5,
+    "elevation_m": -2549.9
+   },
+   "bbox_east_m": [
+    355.7,
+    488.5
+   ],
+   "bbox_north_m": [
+    -50.0,
+    20.0
+   ],
+   "linked_waypoints": [],
+   "source": "CRISM mineral map of Jezero (Parente, Itoh, Saranathan), https://zenodo.org/record/5575824"
+  },
+  {
+   "id": "clay_patch_07",
+   "group": "clay",
+   "label": "Probable clay",
+   "classes": [
+    9
+   ],
+   "confidence": "high (CRISM map code)",
+   "area_m2": 4126.0,
+   "center": {
+    "east_m": 232.4,
+    "north_m": 115.0,
+    "lat": 18.454679,
+    "lon": 77.409902,
+    "x_m": 4588448.5,
+    "y_m": 1093895.5,
+    "elevation_m": -2545.0
+   },
+   "bbox_east_m": [
+    185.0,
+    284.6
+   ],
+   "bbox_north_m": [
+    95.0,
+    130.0
+   ],
+   "linked_waypoints": [
+    "clay_01"
+   ],
+   "source": "CRISM mineral map of Jezero (Parente, Itoh, Saranathan), https://zenodo.org/record/5575824"
+  },
+  {
+   "id": "clay_patch_08",
+   "group": "clay",
+   "label": "Probable clay",
+   "classes": [
+    9
+   ],
+   "confidence": "high (CRISM map code)",
+   "area_m2": 1518.0,
+   "center": {
+    "east_m": 536.0,
+    "north_m": 115.0,
+    "lat": 18.454679,
+    "lon": 77.4153,
+    "x_m": 4588768.5,
+    "y_m": 1093895.5,
+    "elevation_m": -2550.2
+   },
+   "bbox_east_m": [
+    521.7,
+    554.9
+   ],
+   "bbox_north_m": [
+    95.0,
+    130.0
+   ],
+   "linked_waypoints": [],
+   "source": "CRISM mineral map of Jezero (Parente, Itoh, Saranathan), https://zenodo.org/record/5575824"
+  },
+  {
+   "id": "clay_patch_09",
+   "group": "clay",
+   "label": "Probable clay",
+   "classes": [
+    9
+   ],
+   "confidence": "high (CRISM map code)",
+   "area_m2": 1518.0,
+   "center": {
+    "east_m": 948.6,
+    "north_m": 5.0,
+    "lat": 18.452823,
+    "lon": 77.422639,
+    "x_m": 4589203.5,
+    "y_m": 1093785.5,
+    "elevation_m": -2555.6
+   },
+   "bbox_east_m": [
+    934.4,
+    967.6
+   ],
+   "bbox_north_m": [
+    -15.0,
+    20.0
+   ],
+   "linked_waypoints": [],
+   "source": "CRISM mineral map of Jezero (Parente, Itoh, Saranathan), https://zenodo.org/record/5575824"
+  },
+  {
+   "id": "clay_patch_10",
+   "group": "clay",
+   "label": "Probable clay",
+   "classes": [
+    9
+   ],
+   "confidence": "high (CRISM map code)",
+   "area_m2": 1518.0,
+   "center": {
+    "east_m": 673.5,
+    "north_m": -100.0,
+    "lat": 18.451052,
+    "lon": 77.417746,
+    "x_m": 4588913.5,
+    "y_m": 1093680.5,
+    "elevation_m": -2554.2
+   },
+   "bbox_east_m": [
+    659.3,
+    692.5
+   ],
+   "bbox_north_m": [
+    -120.0,
+    -85.0
+   ],
+   "linked_waypoints": [],
+   "source": "CRISM mineral map of Jezero (Parente, Itoh, Saranathan), https://zenodo.org/record/5575824"
+  },
+  {
+   "id": "clay_patch_11",
+   "group": "clay",
+   "label": "Probable clay",
+   "classes": [
+    9
+   ],
+   "confidence": "high (CRISM map code)",
+   "area_m2": 1494.0,
+   "center": {
+    "east_m": 232.4,
+    "north_m": -105.0,
+    "lat": 18.450967,
+    "lon": 77.409902,
+    "x_m": 4588448.5,
+    "y_m": 1093675.5,
+    "elevation_m": -2547.5
+   },
+   "bbox_east_m": [
+    213.4,
+    251.4
+   ],
+   "bbox_north_m": [
+    -120.0,
+    -90.0
+   ],
+   "linked_waypoints": [
+    "clay_02"
+   ],
+   "source": "CRISM mineral map of Jezero (Parente, Itoh, Saranathan), https://zenodo.org/record/5575824"
+  },
+  {
+   "id": "clay_patch_12",
+   "group": "clay",
+   "label": "Probable clay",
+   "classes": [
+    9
+   ],
+   "confidence": "high (CRISM map code)",
+   "area_m2": 1328.0,
+   "center": {
+    "east_m": 777.8,
+    "north_m": 145.0,
+    "lat": 18.455185,
+    "lon": 77.419602,
+    "x_m": 4589023.5,
+    "y_m": 1093925.5,
+    "elevation_m": -2552.0
+   },
+   "bbox_east_m": [
+    763.6,
+    796.8
+   ],
+   "bbox_north_m": [
+    130.0,
+    160.0
+   ],
+   "linked_waypoints": [],
+   "source": "CRISM mineral map of Jezero (Parente, Itoh, Saranathan), https://zenodo.org/record/5575824"
+  },
+  {
+   "id": "clay_patch_13",
+   "group": "clay",
+   "label": "Probable clay",
+   "classes": [
+    9
+   ],
+   "confidence": "high (CRISM map code)",
+   "area_m2": 1304.0,
+   "center": {
+    "east_m": 336.7,
+    "north_m": 150.0,
+    "lat": 18.455269,
+    "lon": 77.411757,
+    "x_m": 4588558.5,
+    "y_m": 1093930.5,
+    "elevation_m": -2546.0
+   },
+   "bbox_east_m": [
+    322.5,
+    351.0
+   ],
+   "bbox_north_m": [
+    130.0,
+    165.0
+   ],
+   "linked_waypoints": [],
+   "source": "CRISM mineral map of Jezero (Parente, Itoh, Saranathan), https://zenodo.org/record/5575824"
+  },
+  {
+   "id": "clay_patch_14",
+   "group": "clay",
+   "label": "Probable clay",
+   "classes": [
+    9
+   ],
+   "confidence": "high (CRISM map code)",
+   "area_m2": 1304.0,
+   "center": {
+    "east_m": 645.0,
+    "north_m": 110.0,
+    "lat": 18.454594,
+    "lon": 77.41724,
+    "x_m": 4588883.5,
+    "y_m": 1093890.5,
+    "elevation_m": -2551.7
+   },
+   "bbox_east_m": [
+    630.8,
+    659.3
+   ],
+   "bbox_north_m": [
+    95.0,
+    130.0
+   ],
+   "linked_waypoints": [],
+   "source": "CRISM mineral map of Jezero (Parente, Itoh, Saranathan), https://zenodo.org/record/5575824"
+  },
+  {
+   "id": "clay_patch_15",
+   "group": "clay",
+   "label": "Probable clay",
+   "classes": [
+    9
+   ],
+   "confidence": "high (CRISM map code)",
+   "area_m2": 1281.0,
+   "center": {
+    "east_m": 882.2,
+    "north_m": 295.0,
+    "lat": 18.457715,
+    "lon": 77.421458,
+    "x_m": 4589133.5,
+    "y_m": 1094075.5,
+    "elevation_m": -2548.8
+   },
+   "bbox_east_m": [
+    868.0,
+    896.4
+   ],
+   "bbox_north_m": [
+    275.0,
+    310.0
+   ],
+   "linked_waypoints": [],
+   "source": "CRISM mineral map of Jezero (Parente, Itoh, Saranathan), https://zenodo.org/record/5575824"
+  },
+  {
+   "id": "clay_patch_16",
+   "group": "clay",
+   "label": "Probable clay",
+   "classes": [
+    9
+   ],
+   "confidence": "high (CRISM map code)",
+   "area_m2": 1162.0,
+   "center": {
+    "east_m": 369.9,
+    "north_m": 75.0,
+    "lat": 18.454004,
+    "lon": 77.412348,
+    "x_m": 4588593.5,
+    "y_m": 1093855.5,
+    "elevation_m": -2547.1
+   },
+   "bbox_east_m": [
+    355.7,
+    384.2
+   ],
+   "bbox_north_m": [
+    60.0,
+    90.0
+   ],
+   "linked_waypoints": [],
+   "source": "CRISM mineral map of Jezero (Parente, Itoh, Saranathan), https://zenodo.org/record/5575824"
+  }
+ ]
+}

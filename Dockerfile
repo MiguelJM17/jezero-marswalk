@@ -1,0 +1,12 @@
+# Jezero Marswalk routing API - Google Cloud Run (1 GiB, 1 CPU, min instances 0)
+FROM python:3.10-slim
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PORT=8080
+WORKDIR /app
+COPY requirements.txt api/requirements-api.txt ./
+RUN pip install --no-cache-dir -r requirements.txt -r requirements-api.txt
+COPY routing/ routing/
+COPY api/ api/
+COPY data/grid5m_jezero_crop/ data/grid5m_jezero_crop/
+COPY base44_handoff/ base44_handoff/
+EXPOSE 8080
+CMD ["sh", "-c", "uvicorn api.main:app --host 0.0.0.0 --port ${PORT} --proxy-headers --forwarded-allow-ips='*'"]

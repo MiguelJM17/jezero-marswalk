@@ -1,0 +1,15 @@
+# Large NASA source data and intermediate rasters stay out of GitHub (see README: "Reproduce")
+data/*
+!data/meda_pressure_summary.json
+meda/
+photos/
+share/
+api_bundle/
+checks/*.png
+!docs/**
+*.tif
+*.tiff
+*.cdf
+*.zip
+__pycache__/
+.DS_Store

@@ -1,0 +1,42 @@
+{
+ "algorithm": "Dijkstra shortest paths on an 8-connected directed grid graph (scipy.sparse.csgraph); fastest = minimise time, easiest = minimise effort, pareto = weighted blends with non-dominated filtering; multi-stop order by exhaustive search",
+ "grid_m": 5.0,
+ "speed": {
+  "equation": "v = k * 6 * exp(-3.5 * |s + 0.05|) km/h, s = dz/dx, k chosen so v(0) = 3.6 km/h",
+  "sources": [
+   "Tobler hiking function",
+   "Apollo planners' 3.6 km/h walkback speed (Apollo Lunar Surface Journal)"
+  ]
+ },
+ "effort": {
+  "equation": "rate = [1.5 + eta*(1.5 V^2 + 0.35 V G)] / [1.5 + 1.5 V0^2], G = max(grade %, 0), effort = time_h * rate",
+  "source": "Pandolf load-carriage equation (used by NASA for EVA traverse workload), no load",
+  "downhill": "counted as flat (team decision, conservative)",
+  "eta": "1 + 0.5*roughness/10.0 deg + 0.5*soil softness, capped at 2.1 (ASSUMPTION; softness from THEMIS between 205.0 and 375.0)"
+ },
+ "oxygen": {
+  "unit": "hours of suit supply at 1200 BTU/h",
+  "basis": "advanced EMU sized for 8 h at 1200 BTU/h; NASA plans planetary EVAs at 1200 BTU/h",
+  "verified_for_mars": false,
+  "gravity_note": "Speed and effort references are lunar/Earth; they over-estimate uphill effort in Mars gravity (conservative)."
+ },
+ "radiation": {
+  "equation": "dose_uGy = sum over steps of walking_time_h x R x (1 - sky_hidden_fraction); walking only, time at stops not included",
+  "R": "median RTG-corrected dose rate (silicon) from Curiosity RAD, last 30 days of data, in uGy/h",
+  "sky_hidden_fraction": "geometric horizon proxy from the HiRISE DTM (500 m, 16 directions)",
+  "status": "ASSUMPTION / estimate: R is measured in Gale crater, not Jezero; terrain shielding of galactic cosmic rays is approximated as proportional to the hidden sky; ground albedo, altitude and solar events are ignored. Use for comparing routes and shelters, not as a dose prediction.",
+  "sources": [
+   "MSL RAD Level 2, NASA CDAWeb",
+   "Ehresmann et al. 2021; Guo et al. 2026 (terrain reduces surface dose)"
+  ]
+ },
+ "constraints": {
+  "forbidden": [
+   "no elevation data",
+   "thermal inertia < 100"
+  ],
+  "warnings_only": [
+   "slope > 20 deg (NASA Artemis suit reference)"
+  ]
+ }
+}

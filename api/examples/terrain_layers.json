@@ -1,0 +1,139 @@
+{
+ "request": {
+  "method": "GET",
+  "path": "/api/terrain/layers",
+  "query": null,
+  "body": null
+ },
+ "status": 200,
+ "response": {
+  "frame": {
+   "name": "local ENU from habitat",
+   "axes": [
+    "east_m",
+    "north_m"
+   ],
+   "origin": "habitat_01",
+   "units": "metres on the ground",
+   "note": "east_m/north_m are ground metres from the habitat. lat/lon are planetocentric degrees, longitude positive east, Mars 2000 sphere (R = 3,396,190 m). x_m/y_m are coordinates in the DTM's equirectangular projection (standard parallel 0, central meridian 0). This is NOT RFC 7946 (Earth WGS84) GeoJSON."
+  },
+  "crs_wkt": "PROJCS[\"Equirectangular Mars 2000 Sphere IAU\",GEOGCS[\"D_Mars_2000_Sphere\",DATUM[\"Mars_2000_(Sphere)\",SPHEROID[\"Mars_2000_Sphere_IAU\",3396190,0],AUTHORITY[\"ESRI\",\"106971\"]],PRIMEM[\"Reference_Meridian\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Equirectangular\"],PARAMETER[\"standard_parallel_1\",0],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]",
+  "width_px": 581,
+  "height_px": 551,
+  "pixel_size_m": {
+   "east": 4.743,
+   "north": 5.0
+  },
+  "bounds": {
+   "east_m": [
+    -1377.8,
+    1377.8
+   ],
+   "north_m": [
+    -1377.5,
+    1377.5
+   ],
+   "lat_range": [
+    18.429542,
+    18.475936
+   ],
+   "lon_range": [
+    77.381306,
+    77.430231
+   ]
+  },
+  "orientation": "north up; row 0 = northern edge; pixel (0,0) is the north-west corner",
+  "no_data": "transparent pixels",
+  "layers": [
+   {
+    "id": "hillshade",
+    "file": "https://%3cservice_url%3e/static/map_layers/hillshade.png",
+    "type": "basemap",
+    "units": null,
+    "legend": "shaded relief (sun azimuth 315, altitude 45)",
+    "source": "HiRISE DTM"
+   },
+   {
+    "id": "elevation",
+    "file": "https://%3cservice_url%3e/static/map_layers/elevation.png",
+    "type": "overlay",
+    "units": "m",
+    "legend": {
+     "colormap": "terrain",
+     "min": -2558.3,
+     "max": -2448.3
+    },
+    "source": "HiRISE DTM"
+   },
+   {
+    "id": "slope",
+    "file": "https://%3cservice_url%3e/static/map_layers/slope.png",
+    "type": "overlay",
+    "units": "deg",
+    "legend": {
+     "colormap": "magma_r",
+     "min": 0.0,
+     "max": 40.0
+    },
+    "source": "HiRISE DTM, 5 m grid"
+   },
+   {
+    "id": "roughness",
+    "file": "https://%3cservice_url%3e/static/map_layers/roughness.png",
+    "type": "overlay",
+    "units": "deg (std of 1 m slope in cell)",
+    "legend": {
+     "colormap": "viridis",
+     "min": 0.0,
+     "max": 8.0
+    },
+    "source": "HiRISE DTM at 1 m"
+   },
+   {
+    "id": "thermal_inertia",
+    "file": "https://%3cservice_url%3e/static/map_layers/thermal_inertia.png",
+    "type": "overlay",
+    "units": "J m-2 K-1 s-1/2",
+    "legend": {
+     "colormap": "cividis",
+     "min": 130.0,
+     "max": 400.0
+    },
+    "source": "THEMIS (Edwards, Zenodo 4931348)"
+   },
+   {
+    "id": "sky_blocked",
+    "file": "https://%3cservice_url%3e/static/map_layers/sky_blocked.png",
+    "type": "overlay",
+    "units": "% of sky hidden",
+    "legend": {
+     "colormap": "plasma",
+     "min": 0.0,
+     "max": 40.0
+    },
+    "source": "computed from HiRISE DTM"
+   },
+   {
+    "id": "minerals",
+    "file": "https://%3cservice_url%3e/static/map_layers/minerals.png",
+    "type": "overlay",
+    "units": null,
+    "legend": {
+     "olivine": "red",
+     "carbonate": "green",
+     "clay": "cyan",
+     "note": "probable detections, high + medium confidence"
+    },
+    "source": "CRISM mineral map of Jezero (Parente, Itoh, Saranathan), https://zenodo.org/record/5575824"
+   },
+   {
+    "id": "comms_line_of_sight",
+    "file": "https://%3cservice_url%3e/static/map_layers/comms_line_of_sight.png",
+    "type": "overlay",
+    "units": null,
+    "legend": "blue = straight line of sight to habitat antenna (assumed heights)",
+    "source": "computed from HiRISE DTM"
+   }
+  ]
+ }
+}

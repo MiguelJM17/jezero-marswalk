@@ -1,0 +1,18 @@
+{
+ "request": {
+  "method": "POST",
+  "path": "/api/routes/easiest",
+  "query": null,
+  "body": {
+   "to": {
+    "east_m": 5000,
+    "north_m": 0
+   }
+  }
+ },
+ "status": 422,
+ "response": {
+  "error": "outside_grid",
+  "detail": "to is outside the API grid (about +/-1373 m around the habitat)"
+ }
+}
