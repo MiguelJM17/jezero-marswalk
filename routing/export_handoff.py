@@ -20,7 +20,7 @@ import numpy as np
 from scipy import ndimage
 
 from . import config as C
-from .planner import Planner, metabolic_rel, tobler_kmh
+from .planner import Planner, metabolic_rel, standing_rel, tobler_kmh
 from .terrain import line_of_sight, load_area, sky_blocked_fraction
 
 FRAME = {
@@ -40,6 +40,19 @@ CRISM_SRC = "CRISM mineral map of Jezero (Parente, Itoh, Saranathan), https://ze
 
 def r1(x, n=1):
     return None if x is None or (isinstance(x, float) and not math.isfinite(x)) else round(float(x), n)
+
+
+def supply(walking_h, science_min):
+    """Suit supply for a route: walking plus the time spent standing at the stops.
+
+    `relative_effort` counts walking only. Standing at a stop still consumes supply
+    (Pandolf's standing term, standing_rel() = 0.5 of the flat walking rate), so a
+    route that includes science time costs more than its walking figure says."""
+    sci = (science_min / 60.0) * standing_rel()
+    return {"supply_h_walking": r1(walking_h, 3),
+            "supply_h_science": r1(sci, 3),
+            "supply_h_total": r1(walking_h + sci, 3),
+            "supply_pct_of_suit": r1(100.0 * (walking_h + sci) / C.EVA_MAX_H, 1)}
 
 
 class Exporter:
@@ -118,6 +131,8 @@ class Exporter:
                 "relative_effort": r1(st["effort_o2_h"], 3), "max_slope_deg": r1(st["max_grade_deg"]),
                 "climb_m": r1(st["climb_m"]), "descent_m": r1(st["descent_m"]),
                 "m_steeper_than_20deg": r1(st.get("m_above_slope_limit", 0.0)),
+                "max_side_slope_deg": r1(st.get("max_side_slope_deg", 0.0)),
+                "m_side_slope_steeper_than_20deg": r1(st.get("m_side_slope_over_reference", 0.0)),
                 **self.terrain(nodes)}
 
 
@@ -358,6 +373,7 @@ def main():
                            "start_waypoint_id": "habitat_01", "destination_waypoint_id": s["id"], "round_trip": True,
                            "geometry": X.geometry(nodes), "lonlat": X.latlon(nodes),
                            **mt, "science_time_min": A.dwell_min, "total_time_min": r1(total_min),
+                           **supply(mt["relative_effort"], A.dwell_min),
                            "feasible_recommended_6h": total_min <= C.EVA_NOMINAL_H * 60,
                            "feasible_max_8h": total_min <= C.EVA_MAX_H * 60,
                            "warnings": ([f"{mt['m_steeper_than_20deg']:.0f} m on ground or grade steeper than 20 deg (NASA Artemis suit reference); steepest ground {mt['max_terrain_slope_deg']:.0f} deg, steepest walking grade {mt['max_slope_deg']:.0f} deg"]
@@ -374,6 +390,7 @@ def main():
         d = {"id": rid, "type": typ, "label": label, "start_waypoint_id": "habitat_01", "stop_order": order_ids,
              "round_trip": True, "geometry": X.geometry(nodes), "lonlat": X.latlon(nodes), **mt,
              "science_time_min": A.dwell_min * n_science, "total_time_min": r1(tot),
+             **supply(mt["relative_effort"], A.dwell_min * n_science),
              "feasible_recommended_6h": tot <= C.EVA_NOMINAL_H * 60, "feasible_max_8h": tot <= C.EVA_MAX_H * 60,
              "warnings": ([f"{mt['m_steeper_than_20deg']:.0f} m on ground or grade steeper than 20 deg (NASA Artemis suit reference); steepest ground {mt['max_terrain_slope_deg']:.0f} deg, steepest walking grade {mt['max_slope_deg']:.0f} deg"]
                           if mt["m_steeper_than_20deg"] else []),

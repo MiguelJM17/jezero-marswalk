@@ -112,6 +112,30 @@ def test_tour_respects_budget():
     assert t is not None and t["order"] == (0, 1, 0)
 
 
+def test_side_slope_splits_the_terrain_slope():
+    """tan(terrain)^2 = tan(grade)^2 + tan(side)^2, so a 28 deg walking grade across
+    40 deg ground is a 33 deg side slope, and walking straight up it is none."""
+    from routing.planner import side_slope_deg  # noqa: E402
+    g28 = math.tan(math.radians(28.0))
+    g40 = math.tan(math.radians(40.0))
+    assert abs(float(side_slope_deg(np.array([40.0]), np.array([g28]))[0]) - 33.0) < 0.1
+    assert float(side_slope_deg(np.array([40.0]), np.array([g40]))[0]) < 1e-6
+    assert float(side_slope_deg(np.array([0.0]), np.array([0.0]))[0]) == 0.0
+
+
+def test_standing_costs_half_of_flat_walking():
+    """Pandolf with V = 0 leaves only the standing term, so a stop costs half the
+    supply rate of walking on flat ground. Derived from the same constants."""
+    from routing.planner import standing_rel  # noqa: E402
+    assert abs(standing_rel() - 0.5) < 1e-12
+
+
+def test_flat_route_reports_no_side_slope():
+    p = Planner(make_area(np.zeros((5, 21))))
+    st = p.stats(p.path((2, 0), (2, 20), 1.0))
+    assert st["max_side_slope_deg"] == 0.0 and st["m_side_slope_over_reference"] == 0.0
+
+
 def test_line_of_sight_and_skyview():
     z = np.zeros((21, 21))
     z[:, 10] = 30.0

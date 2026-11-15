@@ -60,6 +60,16 @@ PANDOLF_GRADE_COEF = 0.35
 # ASSUMPTION: walking downhill is never counted as cheaper than flat (conservative).
 DOWNHILL_MIN_REL = 1.0
 
+# ASSUMPTION: how much of the side slope is added to the grade Pandolf sees.
+# Side slope (the cross-slope an astronaut walks across) is where falls happen, and
+# neither Tobler nor Pandolf models it: both were measured walking straight up or down.
+# No measurement exists for a suited astronaut traversing a Martian hillside, so the
+# weight is ours. 0.0 = measure and report side slope but do not price it, which is the
+# default and reproduces every published route. 0.5 = a 30 deg side slope costs like a
+# 15 deg climb. Raising it makes the planner prefer longer routes that cross hillsides
+# less steeply; routes/*.json reports side slope either way.
+SIDE_SLOPE_WEIGHT = 0.0
+
 # ASSUMPTION: terrain difficulty multiplier (Pandolf's "terrain factor" idea, eta >= 1).
 #   eta = 1 + ROUGH_WEIGHT * roughness_deg / ROUGH_REF_DEG
 #           + SOIL_WEIGHT  * soil_softness   (0 = firm, 1 = softest in the area)

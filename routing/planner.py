@@ -38,12 +38,44 @@ def tobler_kmh(s):
 FLAT_V_MS = C.FLAT_SPEED_KMH / 3.6
 
 
-def metabolic_rel(s, v_ms, eta):
+def side_slope_deg(terrain_slope_deg, walking_grade):
+    """Side slope of a step: the cross-slope component the astronaut walks across.
+
+    A step across a hillside splits the terrain's steepest slope into the grade along
+    the direction of travel and the side slope perpendicular to it:
+        tan(terrain)^2 = tan(grade)^2 + tan(side)^2
+    so the side slope follows from the terrain slope and the step's own grade, with no
+    new data. Neither Tobler nor Pandolf models it, and it is where falls happen, so
+    every route reports it whether or not SIDE_SLOPE_WEIGHT penalises it."""
+    tt = np.tan(np.radians(np.nan_to_num(terrain_slope_deg, nan=0.0))) ** 2
+    tg = np.asarray(walking_grade, dtype=float) ** 2
+    return np.degrees(np.arctan(np.sqrt(np.maximum(tt - tg, 0.0))))
+
+
+def standing_rel():
+    """Pandolf rate while standing still at a science stop, relative to walking on flat
+    smooth ground. V = 0 removes both movement terms and eta with them, so only the
+    standing term is left: 1.5 / (1.5 + 1.5 * V0^2) = 0.5. Derived from the same
+    constants as metabolic_rel, not a separate assumption.
+
+    This is a lower bound on the cost of working at a stop: sampling, bending and
+    handling tools cost more than standing still."""
+    return C.PANDOLF_STAND_COEF / (C.PANDOLF_STAND_COEF + C.PANDOLF_SPEED_COEF * FLAT_V_MS ** 2)
+
+
+def metabolic_rel(s, v_ms, eta, side_deg=None):
     """Pandolf metabolic rate relative to walking on flat, smooth ground at the flat speed.
     Pandolf (no load): M = W * [1.5 + eta * (1.5 V^2 + 0.35 V G)]; body weight W cancels.
     Includes the standing term (1.5 W), so slow walking is not over-penalised.
-    Downhill (G < 0) is counted as flat (team decision: never cheaper than flat)."""
+    Downhill (G < 0) is counted as flat (team decision: never cheaper than flat).
+
+    When C.SIDE_SLOPE_WEIGHT is above zero, a fraction of the side slope is added to the
+    grade Pandolf sees, so crossing a hillside costs more than the same walking grade on
+    level ground. The weight is an ASSUMPTION; with the default of 0 the rate is exactly
+    what it was before, and side slope is measured and reported but never priced."""
     g = np.maximum(100.0 * s, 0.0) if C.DOWNHILL_MIN_REL >= 1.0 else 100.0 * s
+    if C.SIDE_SLOPE_WEIGHT and side_deg is not None:
+        g = g + C.SIDE_SLOPE_WEIGHT * 100.0 * np.tan(np.radians(side_deg))
     m = C.PANDOLF_STAND_COEF + eta * (C.PANDOLF_SPEED_COEF * v_ms ** 2 + C.PANDOLF_GRADE_COEF * v_ms * g)
     m0 = C.PANDOLF_STAND_COEF + C.PANDOLF_SPEED_COEF * FLAT_V_MS ** 2
     return m / m0
@@ -71,7 +103,8 @@ class Planner:
             m = u_ok & v_ok
             rr, cc = np.nonzero(m)
             rr, cc = rr + r0, cc + c0
-            t, eff = self._edge_costs(s[m], dist, self.eta[rr, cc], self.eta[rr + di, cc + dj])
+            side = side_slope_deg(0.5 * (area.slope[rr, cc] + area.slope[rr + di, cc + dj]), s[m])
+            t, eff = self._edge_costs(s[m], dist, self.eta[rr, cc], self.eta[rr + di, cc + dj], side)
             src.append((rr * W + cc).astype(np.int32))
             dst.append(((rr + di) * W + (cc + dj)).astype(np.int32))
             t_.append(t.astype(np.float32))
@@ -85,11 +118,11 @@ class Planner:
         self._G = {}
 
     @staticmethod
-    def _edge_costs(s, dist, eta_u, eta_v):
+    def _edge_costs(s, dist, eta_u, eta_v, side_deg=None):
         """time (s) and effort (oxygen-hours) for steps of grade s and length dist."""
         v_ms = tobler_kmh(s) / 3.6
         t = dist / v_ms
-        eff = (t / 3600.0) * metabolic_rel(s, v_ms, 0.5 * (eta_u + eta_v))
+        eff = (t / 3600.0) * metabolic_rel(s, v_ms, 0.5 * (eta_u + eta_v), side_deg)
         return t, eff
 
     # ---------------------------------------------------------------- graphs
@@ -142,15 +175,20 @@ class Planner:
         if len(rc) < 2:
             return {"distance_m": 0.0, "time_h": 0.0, "effort_o2_h": 0.0, "max_grade_deg": 0.0,
                     "climb_m": 0.0, "descent_m": 0.0, "m_above_slope_limit": 0.0, "m_soft_soil_warning": 0.0,
-                    "mean_roughness_deg": 0.0, "mean_thermal_inertia": 0.0}
+                    "mean_roughness_deg": 0.0, "mean_thermal_inertia": 0.0,
+                    "max_side_slope_deg": 0.0, "m_side_slope_over_reference": 0.0}
         d_rc = np.diff(rc, axis=0)
         dist = np.hypot(d_rc[:, 1] * self.a.dx, d_rc[:, 0] * self.a.dy)
         z = self.a.z[rc[:, 0], rc[:, 1]]
         dz = np.diff(z)
         s = dz / dist
         eta = self.eta[rc[:, 0], rc[:, 1]]
-        t, eff = self._edge_costs(s, dist, eta[:-1], eta[1:])
+        terr = self.a.slope[rc[:, 0], rc[:, 1]]
+        side = side_slope_deg(0.5 * (terr[:-1] + terr[1:]), s)
+        t, eff = self._edge_costs(s, dist, eta[:-1], eta[1:], side)
         return {
+            "max_side_slope_deg": float(side.max()),
+            "m_side_slope_over_reference": float(dist[side > C.MAX_SLOPE_DEG].sum()),
             "distance_m": float(dist.sum()),
             "time_h": float(t.sum() / 3600.0),
             "effort_o2_h": float(eff.sum()),
