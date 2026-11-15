@@ -8,7 +8,7 @@ The goal is an HTTP API that the Base44 app can call to get routes **live** for 
 | `routing/` | The engine, already working. `config.py` (all constants, each with its source), `terrain.py` (reads the grid, sky view, line of sight), `planner.py` (graph, Dijkstra, alternatives, tour, emergency), `export_handoff.py` (**builds the JSON objects the app uses: reuse these functions**), `run_plan.py`, `plot_plan.py` |
 | `tests/` | 11 tests on synthetic terrain (`python3 -m pytest -q tests`) |
 | `data/grid5m_jezero_crop/` | NASA layers on a 5 m grid, ±3 km around the habitat (elevation, slope, roughness, thermal inertia, CRISM minerals) plus `grid.json`. 14 MB. With this crop the routes come out **identical** to the full grid (verified). |
-| `outputs/` | The format contract: what the app already has. The API must answer with these same objects and fields. Start with `README_sources.md`. |
+| `outputs/` | The format contract: what the app already has. The API must answer with these same objects and fields. Start with its `README.md`. |
 | `curated/proposed_stops.csv` | The 6 stops and the habitat (option A) |
 | `processing/build_grid.py`, `scripts/download_rad.sh` | How the grid and radiation data were built (reference only; the API doesn't need them) |
 

@@ -1,0 +1,9 @@
+# Notices
+
+NASA data used by this project (the HiRISE DTM, the CRISM mineral map, THEMIS
+thermal inertia, Mars 2020 / Perseverance imagery and traverse, MEDA pressure
+and MSL/RAD radiation data) is credited in README.md with its source and DOI.
+That data is not covered by the MIT license in LICENSE, and NASA does not
+endorse this project.
+
+The code in this repository is MIT licensed. See LICENSE.
