@@ -6,4 +6,4 @@ Pillow==12.3.0
 cdflib==1.3.16
 pytest
 httpx2        # required by fastapi/starlette TestClient (tests/test_api.py)
-pyproj        # required by ronald/sample_layers.py
+pyproj        # required by curated/sample_layers.py

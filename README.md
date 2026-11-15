@@ -246,12 +246,17 @@ NASA rasters  →  build_grid.py →  terrain.py → planner.py  →  JSON + map
 
 ## Reproduce
 
+Everything below runs from a clone of this repository, with no files from us
+beyond what is committed here. The NASA source data is downloaded in step 1.
+
 ```bash
-pip install -r requirements.txt
+pip install -r requirements.txt            # engine, processing, engine tests
+pip install -r api/requirements-api.txt    # only for the API and its tests (step 5)
 ```
 
 1. **Download the source data** into `data/` (not committed; too large):
-   - HiRISE DTM: USGS Mars 2020 TRN HiRISE DTM mosaic, https://doi.org/10.5066/P9REJ9JN (`JEZ_hirise_soc_006_DTM_MOLAtopography_DeltaGeoid_1m_Eqc_latTs0_lon0_blend40.tif`)
+   - HiRISE DTM: USGS Mars 2020 TRN HiRISE DTM mosaic, https://doi.org/10.5066/P9REJ9JN
+     (direct file: https://planetarymaps.usgs.gov/mosaic/mars2020_trn/HiRISE/JEZ_hirise_soc_006_DTM_MOLAtopography_DeltaGeoid_1m_Eqc_latTs0_lon0_blend40.tif)
    - THEMIS thermal inertia: https://zenodo.org/record/4931348 (`Jezero_Thermal_Inertia_v1.tiff`)
    - CRISM mineral map: https://zenodo.org/record/5575824 (`jezeroFinal.tif` and its legend)
    - Curiosity RAD: `bash scripts/download_rad.sh`
@@ -262,9 +267,19 @@ pip install -r requirements.txt
    python3 -m routing.export_handoff --stops curated/proposed_stops.csv --photos curated/photo_table.csv \
        --option A --base-lat 18.452739 --base-lon 77.405768 --out outputs
    ```
-4. **Tests:** `python3 -m pytest -q tests` — 49 tests (11 engine, 38 API). They need the grid from step 2,
-   because the API loads the real terrain at startup. If your grid is not at `data/processed/grid5m`,
-   point to it first: `export MARSWALK_GRID=/path/to/grid5m`.
+4. **Export the terrain grid the front end draws under the routes.** `export_handoff.py` writes the
+   routes and the map layers; this writes the elevation grid itself, which the app loads separately.
+   ```bash
+   python3 -m routing.export_grid --base-lat 18.452739 --base-lon 77.405768 \
+       --half 1400 --cell 10 --out outputs/terrain_grid_10m.json
+   ```
+   The file is about 20 MB, which is why it is not committed. Steps 3 and 4 together produce every
+   file the front end reads.
+5. **Tests:** `python3 -m pytest -q tests` — 49 tests (11 engine, 38 API). The 11 engine tests run on
+   synthetic terrain and need nothing from steps 1 to 4: `python3 -m pytest -q tests/test_planner.py`
+   passes on a fresh clone. The 38 API tests need the grid from step 2, because the API loads the real
+   terrain at startup, and the exported files from step 3. If your grid is not at
+   `data/processed/grid5m`, point to it first: `export MARSWALK_GRID=/path/to/grid5m`.
 
 ## NASA data and resources
 

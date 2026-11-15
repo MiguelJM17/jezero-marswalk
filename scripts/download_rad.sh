@@ -1,9 +1,9 @@
 #!/bin/bash
 # Downloads MSL/RAD obs-l2 daily CDF files (2026, days 001-315) from NASA CDAWeb.
 # Source: https://cdaweb.gsfc.nasa.gov/sp_phys/data/msl/rad/cdf/obs-l2/2026/
-# Run from your own Mac Terminal:  bash ~/eulers-disappointments/scripts/download_rad.sh
+# Run from anywhere: bash scripts/download_rad.sh  (writes into this repo's data/rad/)
 BASE="https://cdaweb.gsfc.nasa.gov/sp_phys/data/msl/rad/cdf/obs-l2/2026"
-DEST="$HOME/eulers-disappointments/data/rad"
+DEST="$(cd "$(dirname "$0")/.." && pwd)/data/rad"
 mkdir -p "$DEST"; cd "$DEST" || exit 1
 ok=0; fail=0
 for f in \
