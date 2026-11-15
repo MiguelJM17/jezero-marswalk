@@ -5,7 +5,7 @@
     python3 tools/check_live_api.py http://localhost:8080
 
 Only the Python standard library is used, so it runs in Cloud Shell as is.
-Checks: health, the 3 mandatory checks of API_CONTRACT.md, all 28 saved routes, the
+Checks: health, the 3 mandatory checks of API_CONTRACT.md, every saved route, the
 4 saved emergency scenarios, the endpoint list in /openapi.json, CORS for the app
 origins, and the map-layer URLs. Exit code 0 only if everything passes.
 """
@@ -118,7 +118,9 @@ def main():
         seen.add(rid)
         dd = diff(j["best_tour"], routes[rid]) if st == 200 and j.get("best_tour") else [st]
         check(rid, not dd, dd)
-    check("all 28 saved routes compared", seen == set(routes) and len(routes) == 28, sorted(set(routes) - seen))
+    # Coverage, not a fixed count: how many Pareto alternatives exist depends on the
+    # cost model, but no saved route may go unchecked.
+    check(f"all {len(routes)} saved routes compared", seen == set(routes), sorted(set(routes) - seen))
 
     for sid, s in emerg.items():
         st, j, _ = call("POST", "/api/emergency/reachable",
@@ -132,7 +134,9 @@ def main():
 
     st, j, _ = call("GET", "/api/terrain/layers")
     f = j["layers"][1]["file"] if st == 200 else ""
-    check("layer URLs are absolute https", f.startswith("https://") or base.startswith("http://localhost"), f)
+    local = base.startswith("http://localhost") or base.startswith("http://127.0.0.1")
+    check("layer URLs are absolute https" + (" (skipped: local run)" if local else ""),
+          f.startswith("https://") or local, f)
     if f:
         req = urllib.request.Request(f, headers={"Authorization": f"Bearer {A.token}"} if A.token else {})
         try:
