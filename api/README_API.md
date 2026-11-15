@@ -1,21 +1,21 @@
 # Euler's Disappointments: Marswalk route API (bundle for Valeria)
 
-The goal is an HTTP API that Mary's Base44 app can call to get routes **live** for any point the astronaut chooses, in **exactly the same JSON format** as the precomputed files in `base44_handoff/` (Mary is importing those now). When the API is ready, the app only changes where the data comes from.
+The goal is an HTTP API that the Base44 app can call to get routes **live** for any point the astronaut chooses, in **exactly the same JSON format** as the precomputed files in `base44_handoff/` (the app imports those). When the API is ready, the app only changes where the data comes from.
 
 ## What's in the bundle
 | Folder | Contents |
 |---|---|
-| `routing/` | The engine, already working. `config.py` (all constants, each with its source), `terrain.py` (reads the grid, sky view, line of sight), `planner.py` (graph, Dijkstra, alternatives, tour, emergency), `export_handoff.py` (**builds the JSON objects Mary uses: reuse these functions**), `run_plan.py`, `plot_plan.py` |
+| `routing/` | The engine, already working. `config.py` (all constants, each with its source), `terrain.py` (reads the grid, sky view, line of sight), `planner.py` (graph, Dijkstra, alternatives, tour, emergency), `export_handoff.py` (**builds the JSON objects the app uses: reuse these functions**), `run_plan.py`, `plot_plan.py` |
 | `tests/` | 11 tests on synthetic terrain (`python3 -m pytest -q tests`) |
 | `data/grid5m_jezero_crop/` | NASA layers on a 5 m grid, ±3 km around the habitat (elevation, slope, roughness, thermal inertia, CRISM minerals) plus `grid.json`. 14 MB. With this crop the routes come out **identical** to the full grid (verified). |
-| `base44_handoff/` | The format contract: what Mary already has. The API must answer with these same objects and fields. Start with `README_sources.md`. |
-| `ronald/proposed_stops.csv` | The 6 stops and the habitat (option A) |
+| `base44_handoff/` | The format contract: what the app already has. The API must answer with these same objects and fields. Start with `README_sources.md`. |
+| `curated/proposed_stops.csv` | The 6 stops and the habitat (option A) |
 | `processing/build_grid.py`, `scripts/download_rad.sh` | How the grid and radiation data were built (reference only; the API doesn't need them) |
 
 ## Test that it works (5 minutes)
 ```bash
 pip install -r requirements.txt
-python3 -m routing.export_handoff --grid data/grid5m_jezero_crop --stops ronald/proposed_stops.csv \
+python3 -m routing.export_handoff --grid data/grid5m_jezero_crop --stops curated/proposed_stops.csv \
   --option A --base-lat 18.452739 --base-lon 77.405768 --out /tmp/test_handoff
 ```
 It should print `17 routes, 4 emergency scenarios` in about 9 s and use about 300 MB of RAM.
@@ -42,7 +42,7 @@ Positions can be sent as `{"waypoint_id": "carbonate_01"}`, `{"lat":..,"lon":..}
 - Slope: there is no 20° mask. It is only a warning (team decision).
 - Answer 422 when a point is outside the grid, and 404 for an unknown `waypoint_id`.
 - CORS: allow the Base44 app's domain.
-- The base and stops are already in `ronald/proposed_stops.csv`. The corrected habitat is 18.452739, 77.405768.
+- The base and stops are already in `curated/proposed_stops.csv`. The corrected habitat is 18.452739, 77.405768.
 
 ## Deployment (Google Cloud Run)
 Miguel creates the Google Cloud project and enables Cloud Run and Cloud Build. You write the code and a `Dockerfile`:

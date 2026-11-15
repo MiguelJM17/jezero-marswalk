@@ -1,4 +1,4 @@
-"""Export the analysis grid in the shape Mary's Base44 import page expects:
+"""Export the analysis grid in the shape the Base44 import page expects:
 { cell_size, bounds:{minX,minY,maxX,maxY}, elevation:[...], thermal_inertia:[...], minerals:{carbonate,olivine,clay}, crs }
 in local ENU metres from the habitat, on a square grid (resampled from the 5 m grid).
 

@@ -1,6 +1,6 @@
 # Prompt for the Base44 editor chat
 
-Attach `openapi.json`, replace `<URL>` with the Cloud Run URL, then paste:
+Attach `api/openapi.json`, replace `<URL>` with the Cloud Run URL, then paste:
 
 ---
 

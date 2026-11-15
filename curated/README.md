@@ -1,6 +1,6 @@
-# Field data (prepared by Ronald Aguirre)
+# Curated field data
 
-Source tables the pipeline reads. They were compiled by hand from NASA sources and
+Source tables the pipeline reads. They were compiled by hand by Ronald Aguirre from NASA sources and
 checked against the rover record. **Their column names and some values are in Spanish**,
 because that is how they were authored; the code reads them by those names, so they are
 kept as they are rather than renamed. This file is the key.

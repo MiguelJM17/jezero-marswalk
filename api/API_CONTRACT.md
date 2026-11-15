@@ -1,11 +1,11 @@
-# API contract: Marswalk routing (Valeria ⇄ Mary)
+# API contract: Marswalk routing (API ⇄ app)
 
 v1 · Nov 14, 2026 · Miguel
 
-The **endpoint names are the ones Mary's app already uses** (app page `/data` → External API). The **response formats are the ones in `base44_handoff/`**. If Valeria builds exactly this, Mary only has to put the base URL in her app's Settings.
+The **endpoint names are the ones the Base44 app already uses** (app page `/data` → External API). The **response formats are the ones in `base44_handoff/`**. If Valeria builds exactly this, the app only needs the base URL in its Settings.
 
 ## General rules
-- Base URL: `https://<server>/` (Mary puts it in Settings). Everything is JSON, UTF-8.
+- Base URL: `https://<server>/` (set in the app's Settings). Everything is JSON, UTF-8.
 - CORS: allow `https://jolly-mars-path-pilot.base44.app`.
 - Coordinates: `east_m` / `north_m` from the habitat (habitat_01 = 0,0), the same frame as `base44_handoff`. Every point also returns `lat`, `lon` and `elevation_m`.
 - A **position** in a request can be any one of:
@@ -19,7 +19,7 @@ The **endpoint names are the ones Mary's app already uses** (app page `/data` �
   - **422** for a point outside the grid or a point that can't be walked;
   - **500** for anything else.
 
-  Mary's app never replaces a failed call with invented results.
+  the Base44 app never replaces a failed call with invented results.
 
 ## Route object (the same as each element of `routes.json` → `routes`)
 ```json

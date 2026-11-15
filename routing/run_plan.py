@@ -3,7 +3,7 @@
 Usage:
   python -m routing.run_plan --grid data/processed/grid5m \
       --base-lon 77.4508 --base-lat 18.4447 --base-name "Octavia E. Butler Landing" \
-      --stops ronald/proposed_stops.csv --option A \
+      --stops curated/proposed_stops.csv --option A \
       --rad data/processed/rad_summary.json --out data/processed/plan.json
 
 Every route carries a "card" (like a maps app): distance, time, effort, estimated

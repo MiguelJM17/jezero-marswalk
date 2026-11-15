@@ -142,7 +142,7 @@ def pareto(req: RouteReq):
 
 @app.post("/routes", include_in_schema=False)
 def routes_compat(req: RouteReq):
-    """Valeria's path (TERMINAR_API_RONALD.md, step 2): fastest / balanced / easiest, as in routes.json."""
+    """Fastest / balanced / easiest, as in routes.json."""
     rs = run(engine().pareto, req.from_, req.to, req.round_trip, req.dwell_min, (1.0, 0.5, 0.0))
     return {"routes": rs, "oxygen_verified": False}
 

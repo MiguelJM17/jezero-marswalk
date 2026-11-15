@@ -4,13 +4,13 @@ Nov 14, 2026 · Euler's Disappointments
 
 **Status:** built and tested locally. **Not deployed yet.** There is no public URL until someone with access to the Google Cloud project runs the deploy commands in the deployment section.
 
-This is a FastAPI service that wraps Miguel's **current** routing engine (`routing/` from `motor_nuevo_ronald.zip`, unchanged), the same code that produced `base44_handoff/`. It answers with the same JSON objects as the **28-route** handoff. The endpoints follow `API_CONTRACT.md` v1, which uses the paths Mary's app already calls.
+This is a FastAPI service that wraps Miguel's **current** routing engine (`routing/`, unchanged), the same code that produced `base44_handoff/`. It answers with the same JSON objects as the **28-route** handoff. The endpoints follow `API_CONTRACT.md` v1, which uses the paths the Base44 app already calls.
 
 **One source for every number.** Metrics, terrain slope, radiation, segments with the nearest safe place, geometry and point objects all come from `routing.export_handoff.Exporter`. `api/engine.py` sets up `Exporter` exactly like `export_handoff.main()`. It does not compute any field itself. It only reads positions, returns errors and runs the engine for any start or destination.
 
 ## Why this is a new `api/main.py`
 
-Valeria's `Jezero_Marswalk_API.zip` (SHA-256 `d8e79fbb…8322`) was not available to me. Miguel's guide gives a fallback for that case: write `api/main.py` from `API_CONTRACT.md`. That is what this is.
+An earlier adapter was not available when this was built, so `api/main.py` was written directly from `API_CONTRACT.md`.
 
 - If Valeria's package turns up, the team can choose either version.
 - Both versions wrap the same engine.
@@ -79,7 +79,7 @@ Then open:
 - `http://localhost:8080/api/health`
 - `http://localhost:8080/docs`
 
-The same `openapi.json` is in this folder, generated from the app. Mary's Base44 chat asked for it.
+The same `openapi.json` is in this folder, generated from the app. the Base44 chat asked for it.
 
 ## Endpoints
 
@@ -236,17 +236,17 @@ The `*.run.app` URL works right away. For the demo, give the app that URL; the c
    3. a real request;
    4. the coordinates fall inside the map.
 3. The app should say "Routing API connected" only after a request has worked. If a call fails, the app keeps using the precomputed files and never makes up a result.
-4. Attach `openapi.json` in the Base44 chat and paste the prompt in `BASE44_PROMPT.md`.
+4. Attach `openapi.json` in the Base44 chat and paste the prompt in `docs/BASE44_PROMPT.md`.
 5. Test Find a Mineral, Plan a Trip and Emergency in the editor. Then click **Publish App** (top right) so the public link uses the API.
 
 ## Engine notes for Miguel
 
-1. **The engine is now your current one.** `routing/`, `processing/`, `tests/test_planner.py`, `requirements.txt` and the repo `README.md` come from `motor_nuevo_ronald.zip`. The fields I had rebuilt by hand are gone from `api/engine.py`; it calls `Exporter` instead. The previous build is kept apart as a backup and is not in this zip.
+1. **The engine is now your current one.** `routing/`, `processing/`, `tests/test_planner.py`, `requirements.txt` and the repo `README.md` are the current engine. The fields previously rebuilt by hand are gone from `api/engine.py`; it calls `Exporter` instead.
 2. **Blocked cells.** `blocked_mask` now has 3 codes. Inside the API grid none of them applies: all 320,131 cells are walkable. The grid's west edge is at 77.381°E, east of 77.35°E, and no cell there has thermal inertia below 100. If a request lands on a blocked cell, the 422 says which code applies.
 3. **Warning text.** The warning sentence is written inline in `export_handoff.main()`, so the API keeps a copy of the same format string (`Engine.warnings`). The tests compare it with all 28 saved routes. If you move it into a function, the API can call it.
 4. **Grid size.** The grid is the same window as the export: farthest stop + 800 m, about ±1,373 m. That is what makes the routes come out identical. A point outside it returns 422.
 5. **Terrain point minerals.** `/api/terrain/point` uses the engine's `GROUPS` (1 olivine, 2 carbonate, 3/9/10 clay), so classes such as 4 "Olivine + Smectite" get `group: null`.
-6. **Your step-4 command.** The default grid folder is `data/processed/grid5m`, which is what `processing/build_grid.py` writes; set `MARSWALK_GRID` if yours is elsewhere. It also needs `ronald/rover_waypoints_minerals.csv` for `rover_positions.json`. I added that file.
+6. **Your step-4 command.** The default grid folder is `data/processed/grid5m`, which is what `processing/build_grid.py` writes; set `MARSWALK_GRID` if yours is elsewhere. It also needs `curated/rover_waypoints_minerals.csv` for `rover_positions.json`. I added that file.
 7. **Stable order for mineral patches.** See the `minerals.json` note in the test results section above.
 
 ## Use of AI tools
