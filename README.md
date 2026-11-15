@@ -28,7 +28,7 @@ Jezero Marswalk plans walks for an astronaut on foot in Jezero crater, Mars. It 
 | Missions used | Four: MRO (HiRISE, CRISM), Mars Odyssey (THEMIS), Mars 2020 (traverse, Mastcam-Z, Navcam, MEDA) and MSL (Curiosity RAD) — eight data products |
 | Science stops | 6 probable mineral sites (2 olivine, 2 carbonate, 2 clay/kaolinite), all within 574 m of the habitat and near Perseverance's real path |
 | Routes | 30 precomputed routes: fastest, easiest and Pareto alternatives to every stop (always round trip), 5 time-budget tours, 6 routes that pass by a shelter |
-| Safety | No point of any route is more than **7.5 min** from the habitat or a terrain shelter, and no more than **12.5 min** from the habitat alone |
+| Safety | No point of any route is more than **7.2 min** from the habitat or a terrain shelter, and no more than **12.4 min** from the habitat alone, at the modelled walking pace |
 | Full tour | All 6 stops: **2.71 km, 3 h 58 min** (58 min walking + 6 × 30 min of science), within the 6 h recommended EVA. 3.13 h of suit supply, 39% of an 8 h suit |
 
 | Destination (round trip) | Distance | Total time (incl. 30 min science) | Steepest walking grade | Steepest ground | Steepest side slope |

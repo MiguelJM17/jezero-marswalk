@@ -1,20 +1,14 @@
-# Jezero Marswalk routing API: finished build (Ronald)
+# Routing API: build and deployment notes
 
-Nov 14, 2026 · Euler's Disappointments
+Written by Ronald Aguirre. Start with [`README.md`](README.md) in this folder for what the
+service is and how to run it; this file is the record of how it was built, tested and is to be
+deployed.
 
 **Status:** built and tested locally. **Not deployed yet.** There is no public URL until someone with access to the Google Cloud project runs the deploy commands in the deployment section.
 
-This is a FastAPI service that wraps Miguel's **current** routing engine (`routing/`, unchanged), the same code that produced `outputs/`. It answers with the same JSON objects as the **30-route** handoff. The endpoints follow `API_CONTRACT.md` v1, which uses the paths the Base44 app already calls.
+This is a FastAPI service that wraps the routing engine (`routing/`, unchanged), the same code that produced `outputs/`. It answers with the same JSON objects as the **30-route** handoff. The endpoints follow `API_CONTRACT.md` v1, which uses the paths the Base44 app already calls.
 
 **One source for every number.** Metrics, terrain slope, radiation, segments with the nearest safe place, geometry and point objects all come from `routing.export_handoff.Exporter`. `api/engine.py` sets up `Exporter` exactly like `export_handoff.main()`. It does not compute any field itself. It only reads positions, returns errors and runs the engine for any start or destination.
-
-## Why this is a new `api/main.py`
-
-An earlier adapter was not available when this was built, so `api/main.py` was written directly from `API_CONTRACT.md`.
-
-- If Valeria's package turns up, the team can choose either version.
-- Both versions wrap the same engine.
-- This version is checked against the **30-route** handoff. Valeria's was checked against the older 17-route one.
 
 ## Test results
 
@@ -48,11 +42,11 @@ One harmless difference remains, in `minerals.json`: `clay_patch_13` and `clay_p
 **The three mandatory checks from the contract:**
 
 1. `POST /api/routes/easiest` with `{"to": {"waypoint_id": "carbonate_01"}}` gives:
-   - 1162.7 m
+   - 1091.5 m
    - 29.3 min
-   - effort 0.77
-   - max_slope_deg 27.1
-   - max_terrain_slope_deg 33.9
+   - effort 0.811
+   - max_slope_deg 30.9
+   - max_terrain_slope_deg 31.0
 
    This matches `route_carbonate_01_easiest` ✔
 2. `POST /api/emergency/reachable` from olivine_02 with 1 h left matches `emergency_olivine_02_1h` in every destination and every field ✔
@@ -133,13 +127,14 @@ curl -X POST http://localhost:8080/api/routes/easiest -H "Content-Type: applicat
   -d '{"to":{"waypoint_id":"carbonate_01"}}'
 ```
 
-The response is shortened here. The full one is in `api/examples/routes_easiest.json`.
+The response is shortened here. The full one is in `api/examples/routes_easiest.json`, which
+`tools/refresh_examples.py` rebuilds by replaying each example's own recorded request.
 
 ```json
 {"routes": [{"id": "route_carbonate_01_easiest", "type": "easiest", "label": "preferred (least effort)",
   "start_waypoint_id": "habitat_01", "destination_waypoint_id": "carbonate_01", "round_trip": true,
-  "distance_m": 1162.7, "time_min": 29.3, "relative_effort": 0.77, "max_slope_deg": 27.1,
-  "max_terrain_slope_deg": 33.9, "m_steeper_than_20deg": 122.2, "m_terrain_steeper_than_20deg": 115.3,
+  "distance_m": 1091.5, "time_min": 29.7, "relative_effort": 0.811, "max_slope_deg": 30.9,
+  "max_terrain_slope_deg": 31.0, "max_side_slope_deg": 6.7, "supply_h_total": 1.061,
   "m_walking_grade_steeper_than_20deg": 88.7, "radiation_dose_estimate_uGy": 2.34,
   "science_time_min": 30.0, "total_time_min": 59.3, "feasible_recommended_6h": true, "feasible_max_8h": true,
   "warnings": ["122 m on ground or grade steeper than 20 deg (NASA Artemis suit reference); steepest ground 34 deg, steepest walking grade 27 deg"],
@@ -227,7 +222,7 @@ The `*.run.app` URL works right away. For the demo, give the app that URL; the c
 - The first request after the service has been idle takes about 10 s, because min instances is 0. For the live demo, open `/api/health` a minute before.
 - Never put Google credentials or ADC files in the team chat or in Base44.
 
-## Connect it to Base44 (Ronald)
+## Connect it to the front end
 
 1. In the app, open **Settings → Mars Routing API URL**, paste the URL and save.
 2. Open **Science & Data → Integration test**. It checks four things:
@@ -239,14 +234,14 @@ The `*.run.app` URL works right away. For the demo, give the app that URL; the c
 4. Attach `openapi.json` in the Base44 chat and paste the prompt in `docs/BASE44_PROMPT.md`.
 5. Test Find a Mineral, Plan a Trip and Emergency in the editor. Then click **Publish App** (top right) so the public link uses the API.
 
-## Engine notes for Miguel
+## Notes on the engine
 
-1. **The engine is now your current one.** `routing/`, `processing/`, `tests/test_planner.py`, `requirements.txt` and the repo `README.md` are the current engine. The fields previously rebuilt by hand are gone from `api/engine.py`; it calls `Exporter` instead.
+1. **One engine.** `routing/`, `processing/`, `tests/test_planner.py`, `requirements.txt` and the repo `README.md` are the current engine. The fields previously rebuilt by hand are gone from `api/engine.py`; it calls `Exporter` instead.
 2. **Blocked cells.** `blocked_mask` now has 3 codes. Inside the API grid none of them applies: all 320,131 cells are walkable. The grid's west edge is at 77.381°E, east of 77.35°E, and no cell there has thermal inertia below 100. If a request lands on a blocked cell, the 422 says which code applies.
 3. **Warning text.** The warning sentence is written inline in `export_handoff.main()`, so the API keeps a copy of the same format string (`Engine.warnings`). The tests compare it with every saved route. If you move it into a function, the API can call it.
 4. **Grid size.** The grid is the same window as the export: farthest stop + 800 m, about ±1,373 m. That is what makes the routes come out identical. A point outside it returns 422.
 5. **Terrain point minerals.** `/api/terrain/point` uses the engine's `GROUPS` (1 olivine, 2 carbonate, 3/9/10 clay), so classes such as 4 "Olivine + Smectite" get `group: null`.
-6. **Your step-4 command.** The default grid folder is `data/processed/grid5m`, which is what `processing/build_grid.py` writes; set `MARSWALK_GRID` if yours is elsewhere. It also needs `curated/rover_waypoints_minerals.csv` for `rover_positions.json`. I added that file.
+6. **The export command.** The default grid folder is `data/processed/grid5m`, which is what `processing/build_grid.py` writes; set `MARSWALK_GRID` if the grid is elsewhere. It also needs `curated/rover_waypoints_minerals.csv` for `rover_positions.json`.
 7. **Stable order for mineral patches.** See the `minerals.json` note in the test results section above.
 
 ## Use of AI tools
@@ -261,8 +256,3 @@ This API was written with the help of an AI assistant: **Claude (Anthropic)**, u
 - `tools/check_live_api.py` repeats those comparisons against the deployed service.
 
 Valeria's separate adapter was built with Codex assistance, as stated in her README.
-
-## What to say in the presentation
-
-- **If it is deployed and connected:** "The routing API is live on Google Cloud Run and the app calls it."
-- **If not:** "The routing API is built and tested locally (56 tests pass); cloud deployment is next."
