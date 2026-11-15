@@ -21,7 +21,14 @@
   "max_terrain_slope_deg": "steepest ground slope under the route (slope of the terrain in its own steepest direction; a route can cross it sideways)",
   "m_walking_grade_steeper_than_20deg": "metres where the walking grade exceeds 20 deg",
   "m_terrain_steeper_than_20deg": "metres on ground whose terrain slope exceeds 20 deg",
-  "m_steeper_than_20deg": "metres where either of the two above exceeds 20 deg (used for warnings)"
+  "m_steeper_than_20deg": "metres where either of the two above exceeds 20 deg (used for warnings)",
+  "max_side_slope_deg": "steepest side slope: the cross-slope the astronaut walks across, from tan(terrain)^2 = tan(grade)^2 + tan(side)^2. Neither the speed nor the effort model prices it unless SIDE_SLOPE_WEIGHT is above zero",
+  "m_side_slope_steeper_than_20deg": "metres where the side slope exceeds the 20 deg reference",
+  "relative_effort": "walking only, in hours of suit supply at 1200 BTU/h. Same as supply_h_walking",
+  "supply_h_walking": "supply spent walking the route",
+  "supply_h_science": "supply spent standing at the stops: science_time_min at half the flat walking rate (Pandolf's standing term)",
+  "supply_h_total": "supply_h_walking + supply_h_science. This is the figure to show, not relative_effort",
+  "supply_pct_of_suit": "supply_h_total against an 8 h suit at the reference rate"
  },
  "segment_fields": {
   "nearest_safe_place_id": "habitat or terrain shelter closest in walking time from the segment midpoint",

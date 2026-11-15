@@ -9,10 +9,21 @@
   ]
  },
  "effort": {
-  "equation": "rate = [1.5 + eta*(1.5 V^2 + 0.35 V G)] / [1.5 + 1.5 V0^2], G = max(grade %, 0), effort = time_h * rate",
+  "equation": "rate = [1.5 + eta*(1.5 V^2 + 0.35 V G)] / [1.5 + 1.5 V0^2], G = max(grade %, 0) + SIDE_SLOPE_WEIGHT * 100 * tan(side slope), effort = time_h * rate",
   "source": "Pandolf load-carriage equation (used by NASA for EVA traverse workload), no load",
   "downhill": "counted as flat (team decision, conservative)",
   "eta": "1 + 0.5*roughness/10.0 deg + 0.5*soil softness, capped at 2.1 (ASSUMPTION; softness from THEMIS between 205.0 and 375.0)"
+ },
+ "side_slope": {
+  "equation": "tan(side)^2 = tan(terrain slope)^2 - tan(walking grade)^2",
+  "measured": "reported on every route and segment as max_side_slope_deg and m_side_slope_steeper_than_20deg",
+  "priced": "SIDE_SLOPE_WEIGHT = 0.0 (ASSUMPTION). 0 measures without pricing. Neither Tobler nor Pandolf models side slope: both were measured walking straight up or down, and no measurement exists for a suited astronaut traversing a Martian hillside",
+  "status": "measurement is geometry and carries no assumption; the weight is ours and the README reports what values of it would change"
+ },
+ "standing": {
+  "rate": "0.5 of the flat walking rate, from Pandolf with V = 0, which leaves only the standing term",
+  "used_for": "supply_h_science, the supply spent at science stops",
+  "status": "a lower bound: sampling and handling tools cost more than standing still"
  },
  "oxygen": {
   "unit": "hours of suit supply at 1200 BTU/h",

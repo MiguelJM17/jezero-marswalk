@@ -60,7 +60,9 @@ The useful part is not the number we would pick. It is that **the benefit arrive
 flattens**: any penalty at all removes about 62% of the side-slope exposure, the first quarter of
 it costs no distance at all (2740 m against 2739 m), and raising the weight to 1.0 buys 10 more
 metres for 3% more walking. The conclusion does not depend on the coefficient, which is the usual
-objection to assuming one. Anything above 20° is reported as a **warning** (team decision), never
+objection to assuming one. The validation section below gives the empirical anchor the weight
+otherwise lacks: Perseverance crossed this same ground without once exceeding 20° of side slope,
+and a weight of 0.5 brings our routes inside that envelope. Anything above 20° is reported as a **warning** (team decision), never
 silently hidden.
 
 ## Method
@@ -113,6 +115,20 @@ worst case (a bearing 22.5° off the axis). The clay routes show it: they cross 
 still come out about 4% longer than the straight line. Separating grid quantisation from genuine terrain
 avoidance needs a 16-connected grid or path smoothing. Until then, the 4–13% figure is an **upper bound**
 on how much of the detour the cost model is responsible for.
+
+### What Perseverance itself accepted
+
+The same script measures side slope on the ground the rover actually drove inside this window.
+Perseverance's own path reaches **21.0°** of ground slope, 10 m of it above 20°, and a maximum
+side slope of **17.7°** with **not one metre above 20°**. Our carbonate routes put a walking
+astronaut on 32.4° and 35.1° of side slope.
+
+A six-wheeled vehicle built for rough ground, with a far wider stance than a person on foot,
+stayed inside 20° of cross-slope everywhere it went here. That is not proof of what a suited
+human can take, and the rover chose its path for science and wheel safety rather than for human
+effort. But it is the only traverse of this terrain that has actually happened, and our routes
+sit well outside the envelope it kept to. Of everything in this section, this is the finding we
+would act on first.
 
 Reproduce both tables: `MARSWALK_GRID=<grid> python3 docs/validation/baseline_check.py`
 (output saved in `docs/validation/baseline_check.txt`). The per-route distance table is
