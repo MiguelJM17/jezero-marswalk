@@ -105,6 +105,25 @@ front end reads files. The API in `api/` computes a route to an arbitrary
 coordinate on demand, and it is already tested that way. That is a deployment
 step, not new mathematics.
 
+**The loop that closes it: measured walks.** Every number this engine produces
+rests on a model that has never been walked. Tobler's curve is from terrestrial
+hikers, Pandolf's equation from loaded soldiers on Earth, the 1200 BTU/h rate
+from EVA planning; `routing/config.py` labels 10 of its 20 constants ASSUMPTION
+for exactly this reason. The app already keeps a trip log: the astronaut saves a
+route they chose and it stays on their record. **Today that log lives only in the
+browser and is not read back.** The step it exists for is to record what actually
+happened next to what was predicted -- the time the walk really took, the supply
+really used, where the ground was softer or firmer than the thermal inertia
+suggested -- so that each ASSUMPTION constant can be replaced by a measurement
+from the surface it was guessed for, and the residual between predicted and
+observed becomes a training signal rather than a footnote. That is the point at
+which a terrain cost model stops being a planning aid and starts being
+calibrated. The architecture is already shaped for it: the model is isolated in
+one labelled config file, the engine reads it, and the tests pin every route to
+the engine, so a corrected constant propagates everywhere and any drift shows up
+immediately. What is missing is the recording of the actual walk, not the way
+the model would consume it.
+
 **Where it does not scale yet, and the fix.** Multi-stop ordering is an
 exhaustive search over subsets and permutations (`itertools.permutations` in
 `routing/planner.py`). It is exact and it is fine for the 6 stops here, but it
