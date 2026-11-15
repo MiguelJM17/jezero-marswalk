@@ -24,7 +24,7 @@ Jezero Marswalk plans walks for an astronaut on foot in Jezero crater, Mars. It 
 | Missions used | Four: MRO (HiRISE, CRISM), Mars Odyssey (THEMIS), Mars 2020 (traverse, Mastcam-Z, Navcam, MEDA) and MSL (Curiosity RAD) — eight data products |
 | Science stops | 6 probable mineral sites (2 olivine, 2 carbonate, 2 clay/kaolinite), all within 574 m of the habitat and near Perseverance's real path |
 | Routes | 28 precomputed routes: fastest, easiest and Pareto alternatives to every stop (always round trip), 5 time-budget tours, 6 routes that pass by a shelter |
-| Safety | No point of any route is more than **7.5 min** from the habitat or a terrain shelter |
+| Safety | No point of any route is more than **7.5 min** from the habitat or a terrain shelter, and no more than **12.5 min** from the habitat alone |
 | Full tour | All 6 stops: **2.74 km, 3 h 57 min** (57 min walking + 6 × 30 min of science), within the 6 h recommended EVA |
 
 | Destination (round trip) | Distance | Total time (incl. 30 min science) | Steepest walking grade | Steepest ground under the route |
@@ -33,7 +33,7 @@ Jezero Marswalk plans walks for an astronaut on foot in Jezero crater, Mars. It 
 | Olivine stops | 1127–1257 m | 50–52 min | 7.2–8.6° | 10.0–12.1° |
 | Carbonate stops | 1163–1242 m | 58–60 min | 21.8–28.0° | 33.4–39.5° |
 
-The carbonates sit on top of an escarpment: their routes cross 34–40° ground diagonally, so the walking grade stays at 28° or less. That diagonal has a side slope of roughly 33°, and **neither Tobler nor Pandolf models side slope**, which is where falls happen. Both equations are also being applied well outside the grades they were measured on. We report the figure rather than route around the best science in the area, but a planner should treat these two routes as the ones needing human review. Anything above 20° is reported as a **warning** (team decision), never silently hidden.
+The carbonates sit on top of an escarpment: their routes cross 34–40° ground diagonally, so the walking grade stays at 28° or less. That diagonal has a side slope of roughly 33°, and **neither Tobler nor Pandolf models side slope**, which is where falls happen. Both equations are also being applied well outside the grades they were measured on. We report the figure rather than route around the best science in the area, but a planner should treat these two routes as the ones needing human review. Neither equation penalises side slope, and the validation section below shows what that costs: the model buys a gentler walking grade with more steep ground. A side-slope penalty is the first fix. Anything above 20° is reported as a **warning** (team decision), never silently hidden.
 
 ## Method
 
@@ -68,8 +68,8 @@ straight line drawn from the habitat to the same stop, ignoring the terrain comp
 | **mean** | **83.3** | **80.5** |
 
 A straight line scores slightly better than our routes. The honest reading is that this comparison is a
-**sanity check, not a validation of route quality**: it shows our routes stay inside the corridor
-Perseverance actually crossed instead of wandering into terrain no vehicle has ever touched. It does not
+**sanity check, not a validation of route quality**: it shows our routes stay mostly inside the corridor
+Perseverance actually crossed. It does not
 show the routes are good, and we do not claim that it does.
 
 The same script measures the slope profile of both. Our routes are 4–13 percent longer than the straight
