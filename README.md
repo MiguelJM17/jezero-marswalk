@@ -73,7 +73,7 @@ Each route carries `radiation_dose_estimate_uGy`, and each shelter a dose rate a
 
 ## Routing API (status: built and tested locally, not deployed yet)
 
-A FastAPI service wraps the same routing engine, so the app can ask for new calculations instead of only reading the saved scenarios. Valeria built the first version; Ronald finished it on the current engine. Every number comes from `routing.export_handoff.Exporter`, so the API and the saved files share one source.
+A FastAPI service wraps the same routing engine. It is **not connected to the live app**: marseva.us reads the saved files in `base44_handoff/`, so it can only show the routes that were computed ahead of time. The API is the piece that would let the app ask for a route to any point; it runs and passes its tests, but it is not deployed. Valeria built the first version; Ronald finished it on the current engine. Every number comes from `routing.export_handoff.Exporter`, so the API and the saved files share one source.
 
 - **Endpoints:** `POST /api/routes/fastest`, `/easiest`, `/pareto`, `/mineral-target`, `/time-budget`, `/via-shelter`; `POST /api/emergency/reachable`; `GET /api/health`, `/api/scientific-destinations`, `/api/terrain/layers`, `/api/terrain/point`. A position can be a waypoint id, east/north metres from the habitat, or lat/lon. Docs at `/docs`.
 - **Tests:** 49 pass (11 engine tests + 38 API tests), on Python 3.13 and 3.10 (the Dockerfile version). All 28 saved routes and all 4 emergency scenarios come out identical, field by field, from the live API; a test fails if any saved route is left unchecked.
@@ -85,6 +85,10 @@ A FastAPI service wraps the same routing engine, so the app can ask for new calc
 ## Use of AI tools
 
 The project idea, challenge choice, site, stops and every design decision (cost model, slope warnings instead of bans, what counts as a shelter or a comms point) are the team's. We used an AI assistant (Anthropic's Claude) to help write and debug the Python processing and routing code in this repository, to process and check the data files, and to draft documentation. The routing API (`api/`, `tests/test_api.py`, `tools/`) was written by Ronald with the help of Claude (Anthropic); he directed the work and ran the checks, and the 49 tests compare every answer with the engine-generated files. Valeria's earlier adapter was built with help from OpenAI Codex. Every number in the outputs comes from running this code on the NASA data listed below. Rover photos, positions and the validation were selected and checked by the team.
+
+## What is in this repository
+
+The engine, the data pipeline, the routing API and the outputs they produce. The front end at marseva.us was built on Base44, which does not let us export its source, so it is not here. Everything the front end displays does come from this repository: the JSON files and map layers in `base44_handoff/`.
 
 ## Repository layout
 
