@@ -14,9 +14,9 @@
  "response": {
   "routes": [
    {
-    "id": "route_habitat_01_to_point_easiest",
-    "type": "easiest",
-    "label": "preferred (least effort)",
+    "id": "route_habitat_01_to_point_fastest",
+    "type": "fastest",
+    "label": "fastest",
     "start_waypoint_id": "habitat_01",
     "destination_waypoint_id": null,
     "round_trip": true,
@@ -34,79 +34,47 @@
       ],
       [
        4.7,
-       10.0
-      ],
-      [
-       9.5,
        15.0
       ],
       [
-       14.2,
+       4.7,
        20.0
       ],
       [
-       19.0,
+       4.7,
        25.0
       ],
       [
-       19.0,
-       30.0
-      ],
-      [
-       19.0,
+       9.5,
        35.0
       ],
       [
-       19.0,
-       40.0
-      ],
-      [
-       19.0,
+       14.2,
        45.0
-      ],
-      [
-       19.0,
-       50.0
       ],
       [
        19.0,
        55.0
       ],
       [
-       19.0,
-       50.0
-      ],
-      [
-       19.0,
+       14.2,
        45.0
       ],
       [
-       19.0,
-       40.0
-      ],
-      [
-       19.0,
+       9.5,
        35.0
       ],
       [
-       19.0,
-       30.0
-      ],
-      [
-       19.0,
+       4.7,
        25.0
       ],
       [
-       14.2,
+       4.7,
        20.0
       ],
       [
-       9.5,
-       15.0
-      ],
-      [
        4.7,
-       10.0
+       15.0
       ],
       [
        0.0,
@@ -129,79 +97,47 @@
      ],
      [
       77.405853,
-      18.452907
-     ],
-     [
-      77.405937,
       18.452992
      ],
      [
-      77.406021,
+      77.405853,
       18.453076
      ],
      [
-      77.406106,
+      77.405853,
       18.45316
      ],
      [
-      77.406106,
-      18.453245
-     ],
-     [
-      77.406106,
+      77.405937,
       18.453329
      ],
      [
-      77.406106,
-      18.453413
-     ],
-     [
-      77.406106,
+      77.406021,
       18.453498
-     ],
-     [
-      77.406106,
-      18.453582
      ],
      [
       77.406106,
       18.453667
      ],
      [
-      77.406106,
-      18.453582
-     ],
-     [
-      77.406106,
+      77.406021,
       18.453498
      ],
      [
-      77.406106,
-      18.453413
-     ],
-     [
-      77.406106,
+      77.405937,
       18.453329
      ],
      [
-      77.406106,
-      18.453245
-     ],
-     [
-      77.406106,
+      77.405853,
       18.45316
      ],
      [
-      77.406021,
+      77.405853,
       18.453076
      ],
      [
-      77.405937,
-      18.452992
-     ],
-     [
       77.405853,
-      18.452907
+      18.452992
      ],
      [
       77.405768,
@@ -212,19 +148,25 @@
       18.452739
      ]
     ],
-    "distance_m": 125.1,
-    "time_min": 2.1,
-    "relative_effort": 0.049,
-    "max_slope_deg": 2.4,
-    "climb_m": 1.1,
-    "descent_m": 1.1,
+    "distance_m": 118.5,
+    "time_min": 2.0,
+    "relative_effort": 0.057,
+    "max_slope_deg": 2.3,
+    "climb_m": 1.2,
+    "descent_m": 1.2,
     "m_steeper_than_20deg": 0.0,
-    "max_terrain_slope_deg": 2.9,
+    "max_side_slope_deg": 2.6,
+    "m_side_slope_steeper_than_20deg": 0.0,
+    "max_terrain_slope_deg": 3.5,
     "m_terrain_steeper_than_20deg": 0.0,
     "m_walking_grade_steeper_than_20deg": 0.0,
-    "radiation_dose_estimate_uGy": 0.18,
+    "radiation_dose_estimate_uGy": 0.17,
     "science_time_min": 30.0,
-    "total_time_min": 32.1,
+    "total_time_min": 32.0,
+    "supply_h_walking": 0.057,
+    "supply_h_science": 0.25,
+    "supply_h_total": 0.307,
+    "supply_pct_of_suit": 3.8,
     "feasible_recommended_6h": true,
     "feasible_max_8h": true,
     "warnings": [],
@@ -235,56 +177,37 @@
        0.0
       ],
       "end": [
-       19.0,
-       50.0
+       4.7,
+       25.0
       ],
-      "distance_m": 57.6,
-      "time_min": 1.0,
-      "relative_effort": 0.024,
-      "max_slope_deg": 2.4,
-      "max_terrain_slope_deg": 2.9,
-      "elevation_change_m": 0.7,
+      "distance_m": 92.5,
+      "time_min": 1.6,
+      "relative_effort": 0.046,
+      "max_slope_deg": 2.3,
+      "max_terrain_slope_deg": 3.5,
+      "elevation_change_m": 0.3,
       "nearest_safe_place_id": "habitat_01",
-      "time_to_nearest_safe_place_min": 0.5,
+      "time_to_nearest_safe_place_min": 0.6,
       "max_time_to_nearest_safe_place_min": 0.9
      },
      {
       "start": [
-       19.0,
-       50.0
-      ],
-      "end": [
        4.7,
-       10.0
-      ],
-      "distance_m": 55.7,
-      "time_min": 0.9,
-      "relative_effort": 0.021,
-      "max_slope_deg": 2.4,
-      "max_terrain_slope_deg": 2.9,
-      "elevation_change_m": -0.6,
-      "nearest_safe_place_id": "habitat_01",
-      "time_to_nearest_safe_place_min": 0.7,
-      "max_time_to_nearest_safe_place_min": 1.0
-     },
-     {
-      "start": [
-       4.7,
-       10.0
+       25.0
       ],
       "end": [
        0.0,
        0.0
       ],
-      "distance_m": 11.9,
-      "time_min": 0.2,
-      "relative_effort": 0.004,
-      "max_slope_deg": 0.6,
-      "max_terrain_slope_deg": 1.4,
-      "elevation_change_m": -0.1,
+      "distance_m": 26.1,
+      "time_min": 0.4,
+      "relative_effort": 0.012,
+      "max_slope_deg": 2.3,
+      "max_terrain_slope_deg": 3.5,
+      "elevation_change_m": -0.3,
       "nearest_safe_place_id": "habitat_01",
-      "time_to_nearest_safe_place_min": 0.1,
-      "max_time_to_nearest_safe_place_min": 0.2
+      "time_to_nearest_safe_place_min": 0.3,
+      "max_time_to_nearest_safe_place_min": 0.4
      }
     ],
     "start": {
@@ -307,9 +230,9 @@
     }
    },
    {
-    "id": "route_habitat_01_to_point_fastest",
-    "type": "fastest",
-    "label": "fastest",
+    "id": "route_habitat_01_to_point_easiest",
+    "type": "easiest",
+    "label": "preferred (least effort)",
     "start_waypoint_id": "habitat_01",
     "destination_waypoint_id": null,
     "round_trip": true,
@@ -323,35 +246,19 @@
       ],
       [
        4.7,
-       5.0
-      ],
-      [
-       4.7,
        10.0
       ],
       [
        9.5,
-       15.0
-      ],
-      [
-       14.2,
        20.0
       ],
       [
-       19.0,
+       9.5,
        25.0
       ],
       [
-       19.0,
-       30.0
-      ],
-      [
-       19.0,
+       14.2,
        35.0
-      ],
-      [
-       19.0,
-       40.0
       ],
       [
        19.0,
@@ -374,36 +281,20 @@
        45.0
       ],
       [
-       19.0,
-       40.0
-      ],
-      [
-       19.0,
+       14.2,
        35.0
       ],
       [
-       19.0,
-       30.0
-      ],
-      [
-       19.0,
+       9.5,
        25.0
       ],
       [
-       14.2,
-       20.0
-      ],
-      [
        9.5,
-       15.0
+       20.0
       ],
       [
        4.7,
        10.0
-      ],
-      [
-       4.7,
-       5.0
       ],
       [
        0.0,
@@ -418,35 +309,19 @@
      ],
      [
       77.405853,
-      18.452823
-     ],
-     [
-      77.405853,
       18.452907
      ],
      [
       77.405937,
-      18.452992
-     ],
-     [
-      77.406021,
       18.453076
      ],
      [
-      77.406106,
+      77.405937,
       18.45316
      ],
      [
-      77.406106,
-      18.453245
-     ],
-     [
-      77.406106,
+      77.406021,
       18.453329
-     ],
-     [
-      77.406106,
-      18.453413
      ],
      [
       77.406106,
@@ -469,55 +344,45 @@
       18.453498
      ],
      [
-      77.406106,
-      18.453413
-     ],
-     [
-      77.406106,
+      77.406021,
       18.453329
      ],
      [
-      77.406106,
-      18.453245
-     ],
-     [
-      77.406106,
+      77.405937,
       18.45316
      ],
      [
-      77.406021,
-      18.453076
-     ],
-     [
       77.405937,
-      18.452992
+      18.453076
      ],
      [
       77.405853,
       18.452907
      ],
      [
-      77.405853,
-      18.452823
-     ],
-     [
       77.405768,
       18.452739
      ]
     ],
-    "distance_m": 125.1,
-    "time_min": 2.1,
-    "relative_effort": 0.049,
+    "distance_m": 118.5,
+    "time_min": 2.0,
+    "relative_effort": 0.051,
     "max_slope_deg": 2.4,
-    "climb_m": 1.1,
-    "descent_m": 1.1,
+    "climb_m": 1.8,
+    "descent_m": 1.8,
     "m_steeper_than_20deg": 0.0,
-    "max_terrain_slope_deg": 2.9,
+    "max_side_slope_deg": 0.8,
+    "m_side_slope_steeper_than_20deg": 0.0,
+    "max_terrain_slope_deg": 2.4,
     "m_terrain_steeper_than_20deg": 0.0,
     "m_walking_grade_steeper_than_20deg": 0.0,
-    "radiation_dose_estimate_uGy": 0.18,
+    "radiation_dose_estimate_uGy": 0.17,
     "science_time_min": 30.0,
-    "total_time_min": 32.1,
+    "total_time_min": 32.0,
+    "supply_h_walking": 0.051,
+    "supply_h_science": 0.25,
+    "supply_h_total": 0.301,
+    "supply_pct_of_suit": 3.8,
     "feasible_recommended_6h": true,
     "feasible_max_8h": true,
     "warnings": [],
@@ -528,56 +393,37 @@
        0.0
       ],
       "end": [
-       19.0,
-       50.0
+       14.2,
+       35.0
       ],
-      "distance_m": 57.6,
-      "time_min": 1.0,
-      "relative_effort": 0.024,
+      "distance_m": 80.3,
+      "time_min": 1.4,
+      "relative_effort": 0.035,
       "max_slope_deg": 2.4,
-      "max_terrain_slope_deg": 2.9,
-      "elevation_change_m": 0.7,
+      "max_terrain_slope_deg": 2.4,
+      "elevation_change_m": 0.2,
       "nearest_safe_place_id": "habitat_01",
-      "time_to_nearest_safe_place_min": 0.5,
+      "time_to_nearest_safe_place_min": 0.8,
       "max_time_to_nearest_safe_place_min": 0.9
      },
      {
       "start": [
-       19.0,
-       50.0
-      ],
-      "end": [
-       4.7,
-       10.0
-      ],
-      "distance_m": 55.7,
-      "time_min": 0.9,
-      "relative_effort": 0.021,
-      "max_slope_deg": 2.4,
-      "max_terrain_slope_deg": 2.9,
-      "elevation_change_m": -0.6,
-      "nearest_safe_place_id": "habitat_01",
-      "time_to_nearest_safe_place_min": 0.7,
-      "max_time_to_nearest_safe_place_min": 1.0
-     },
-     {
-      "start": [
-       4.7,
-       10.0
+       14.2,
+       35.0
       ],
       "end": [
        0.0,
        0.0
       ],
-      "distance_m": 11.9,
-      "time_min": 0.2,
-      "relative_effort": 0.004,
-      "max_slope_deg": 0.5,
-      "max_terrain_slope_deg": 2.1,
-      "elevation_change_m": -0.1,
+      "distance_m": 38.2,
+      "time_min": 0.6,
+      "relative_effort": 0.016,
+      "max_slope_deg": 2.1,
+      "max_terrain_slope_deg": 2.4,
+      "elevation_change_m": -0.2,
       "nearest_safe_place_id": "habitat_01",
-      "time_to_nearest_safe_place_min": 0.1,
-      "max_time_to_nearest_safe_place_min": 0.2
+      "time_to_nearest_safe_place_min": 0.3,
+      "max_time_to_nearest_safe_place_min": 0.6
      }
     ],
     "start": {

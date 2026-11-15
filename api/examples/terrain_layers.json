@@ -47,7 +47,7 @@
   "layers": [
    {
     "id": "hillshade",
-    "file": "https://%3cservice_url%3e/static/map_layers/hillshade.png",
+    "file": "http://testserver/static/map_layers/hillshade.png",
     "type": "basemap",
     "units": null,
     "legend": "shaded relief (sun azimuth 315, altitude 45)",
@@ -55,7 +55,7 @@
    },
    {
     "id": "elevation",
-    "file": "https://%3cservice_url%3e/static/map_layers/elevation.png",
+    "file": "http://testserver/static/map_layers/elevation.png",
     "type": "overlay",
     "units": "m",
     "legend": {
@@ -67,7 +67,7 @@
    },
    {
     "id": "slope",
-    "file": "https://%3cservice_url%3e/static/map_layers/slope.png",
+    "file": "http://testserver/static/map_layers/slope.png",
     "type": "overlay",
     "units": "deg",
     "legend": {
@@ -79,7 +79,7 @@
    },
    {
     "id": "roughness",
-    "file": "https://%3cservice_url%3e/static/map_layers/roughness.png",
+    "file": "http://testserver/static/map_layers/roughness.png",
     "type": "overlay",
     "units": "deg (std of 1 m slope in cell)",
     "legend": {
@@ -91,7 +91,7 @@
    },
    {
     "id": "thermal_inertia",
-    "file": "https://%3cservice_url%3e/static/map_layers/thermal_inertia.png",
+    "file": "http://testserver/static/map_layers/thermal_inertia.png",
     "type": "overlay",
     "units": "J m-2 K-1 s-1/2",
     "legend": {
@@ -103,7 +103,7 @@
    },
    {
     "id": "sky_blocked",
-    "file": "https://%3cservice_url%3e/static/map_layers/sky_blocked.png",
+    "file": "http://testserver/static/map_layers/sky_blocked.png",
     "type": "overlay",
     "units": "% of sky hidden",
     "legend": {
@@ -115,7 +115,7 @@
    },
    {
     "id": "minerals",
-    "file": "https://%3cservice_url%3e/static/map_layers/minerals.png",
+    "file": "http://testserver/static/map_layers/minerals.png",
     "type": "overlay",
     "units": null,
     "legend": {
@@ -128,7 +128,7 @@
    },
    {
     "id": "comms_line_of_sight",
-    "file": "https://%3cservice_url%3e/static/map_layers/comms_line_of_sight.png",
+    "file": "http://testserver/static/map_layers/comms_line_of_sight.png",
     "type": "overlay",
     "units": null,
     "legend": "blue = straight line of sight to habitat antenna (assumed heights)",
